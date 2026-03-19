@@ -95,11 +95,11 @@ input{font-family:inherit;}
 .cmp-card{
   background:rgba(24,29,42,.5);backdrop-filter:blur(10px);
   border:1px solid var(--b);border-radius:var(--rrl);
-  padding:.5rem 1rem .55rem;
-  flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:.4rem .9rem .45rem;
+  flex-shrink:0;
 }
-.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.4rem;flex-shrink:0;}
-.cmp-bars{display:flex;flex-direction:column;justify-content:center;gap:0;flex:1;}
+.cmp-title{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.3rem;}
+.cmp-bars{display:flex;flex-direction:column;gap:0;}
 .cbar{
   display:grid;
   grid-template-columns:5.5ch 1fr 7ch 1fr 5.5ch;
@@ -166,13 +166,10 @@ input{font-family:inherit;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
 /* MOBILE MATCH – LANDSCAPE
-   Phone is landscape on the table.
-   Player A (green, left half): buttons on LEFT of screen, HP in middle, name+dots toward center.
-   Player B (red, right half): mirror of A, content rotated 180° so B reads from right edge.
-
-   Within each half the layout is a ROW:
-     A: [btn-col] [HP] [name+dots]   (left→right)
-     B: rotated 180° so from B's perspective same order, but on screen it appears reversed
+   Screenshot layout:
+   LEFT  (green): [btn-col LEFT] | [HP big] | [name vertical + dots → center]
+   RIGHT (red):   [name vertical + dots ← center] | [HP big] | [btn-col RIGHT]
+   Name on left reads bottom→top. Name on right reads bottom→top too (both face same direction visually).
 */
 #mob-match{
   position:fixed;inset:0;display:none;flex-direction:row;
@@ -180,59 +177,54 @@ input{font-family:inherit;}
 }
 #mob-match.on{display:flex;}
 
-.m-half{flex:1;display:flex;flex-direction:row;align-items:stretch;overflow:hidden;min-width:0;}
-
-/* Player B: rotate the whole half 180° so they read from the right/bottom edge */
-.m-half.pb{transform:rotate(180deg);}
+/* Each half: ROW */
+.m-half{flex:1;display:flex;flex-direction:row;align-items:center;overflow:hidden;min-width:0;}
 
 /* Vertical divider */
 .m-mid-row{width:1px;background:var(--bm);flex-shrink:0;}
 
-/* Button column – LEFT side of each half */
+/* Button column */
 .m-btncol{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(5px,1.5vh,12px);
-  padding:clamp(8px,2vw,18px);
+  gap:clamp(5px,1.2vh,11px);
+  padding:clamp(10px,2.5vw,22px);
   flex-shrink:0;
 }
 .m-btn{
-  width:clamp(44px,7vh,66px);height:clamp(44px,7vh,66px);
+  width:clamp(44px,6.5vh,64px);height:clamp(44px,6.5vh,64px);
   border-radius:var(--rrs);font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(.85rem,2vh,1.25rem);border-width:1px;border-style:solid;
+  font-size:clamp(.85rem,2vh,1.2rem);border-width:1px;border-style:solid;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* Center area: HP big + name/dots column */
-.m-center{flex:1;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(8px,2vw,20px);padding:clamp(8px,2vw,16px);}
-
+/* HP number */
 .m-hp{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(5rem,20vh,11rem);
+  font-size:clamp(5rem,22vh,12rem);
   line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;flex-shrink:0;
 }
 
-/* Name + dots stacked, toward center divider */
+/* Name + dots panel */
 .m-namerow{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(6px,1.5vh,12px);
+  gap:clamp(6px,1.5vh,14px);padding:0 clamp(6px,1.5vw,14px);
 }
 .m-name{
   writing-mode:vertical-rl;
-  font-size:clamp(.55rem,1.3vh,.8rem);
-  letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;
+  transform:rotate(180deg);
+  font-size:clamp(.55rem,1.2vh,.78rem);
+  letter-spacing:.2em;text-transform:uppercase;font-weight:700;white-space:nowrap;
 }
-/* A: name reads bottom→top (rotated text so player reads it from left) */
-.m-half.pa .m-name{transform:rotate(180deg);}
-/* B: name reads top→bottom (already rotated 180° by parent) */
-.m-half.pb .m-name{transform:none;}
-
 .m-dots{display:flex;flex-direction:column;gap:5px;}
-.m-wdot{width:clamp(9px,1.5vh,13px);height:clamp(9px,1.5vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+.m-wdot{width:clamp(9px,1.4vh,13px);height:clamp(9px,1.4vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
 
-/* DOHRÁNO: absolute inside #mob-match (works in fullscreen element) */
+/* HP flex spacer to push HP toward center */
+.m-hp-area{flex:1;display:flex;align-items:center;justify-content:center;}
+
+/* DOHRÁNO: absolute inside #mob-match so it works in element fullscreen */
 .mob-done{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
-  padding:9px 22px;
+  padding:9px 24px;
   font-size:.78rem;font-weight:700;letter-spacing:.16em;
   background:rgba(18,22,31,.96);backdrop-filter:blur(8px);
   border:1.5px solid var(--bh);border-radius:var(--rrl);
@@ -245,7 +237,7 @@ input{font-family:inherit;}
   display:flex;align-items:center;justify-content:center;
 }
 
-/* Overlay INSIDE mob-match for fullscreen compatibility */
+/* Winner overlay inside mob-match for fullscreen */
 .m-overlay{
   display:none;position:absolute;inset:0;background:rgba(10,13,20,.93);z-index:300;
   flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
@@ -408,7 +400,8 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player A: GREEN, left half. Layout: [btn-col | HP | name+dots] -->
+  <!-- Player A: GREEN, left half
+       [btncol LEFT] [HP] [name-vertical + dots → toward center] -->
   <div class="m-half pa">
     <div class="m-btncol">
       <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
@@ -416,41 +409,40 @@ input{font-family:inherit;}
       <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
       <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
     </div>
-    <div class="m-center">
+    <div class="m-hp-area">
       <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
-      <div class="m-namerow">
-        <p class="m-name" id="m-na" style="color:var(--gt);"></p>
-        <div class="m-dots" id="m-d1"></div>
-      </div>
+    </div>
+    <div class="m-namerow">
+      <p class="m-name" id="m-na" style="color:var(--gt);"></p>
+      <div class="m-dots" id="m-d1"></div>
     </div>
   </div>
 
   <!-- Vertical divider -->
   <div class="m-mid-row"></div>
 
-  <!-- Player B: RED, right half. Rotated 180° so B reads from right edge.
-       Layout inside (before rotation): [btn-col | HP | name+dots]
-       After 180° rotation, on screen: [name+dots | HP | btn-col] – B sees it correctly -->
+  <!-- Player B: RED, right half
+       [name-vertical + dots ← toward center] [HP] [btncol RIGHT] -->
   <div class="m-half pb">
+    <div class="m-namerow">
+      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
+      <div class="m-dots" id="m-d2"></div>
+    </div>
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+    </div>
     <div class="m-btncol">
       <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
       <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
       <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
       <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
     </div>
-    <div class="m-center">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-      <div class="m-namerow">
-        <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
-        <div class="m-dots" id="m-d2"></div>
-      </div>
-    </div>
   </div>
 
   <button class="mob-done" onclick="mDohrano()">DOHR&Aacute;NO</button>
   <button class="mob-fs" onclick="toggleFS()" id="fs-btn">&#x26F6;</button>
 
-  <!-- Winner overlay INSIDE mob-match so it works in fullscreen -->
+  <!-- Winner overlay inside mob-match – works in element fullscreen -->
   <div id="m-ov-win" class="m-overlay">
     <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);">KDO VYHR&Aacute;L HRU?</p>
     <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
