@@ -2,619 +2,587 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="theme-color" content="#0e1118"/>
+<meta name="theme-color" content="#0a0d14"/>
 <title>MTG Match Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#0e1118;--surface:#161b27;--card:#1c2133;
-  --border:rgba(255,255,255,0.07);--border-md:rgba(255,255,255,0.15);
-  --text:#dde0ef;--muted:#6e728a;--dim:#2a2d42;
-  --green:#1aaa7a;--green-bg:rgba(26,170,122,0.12);--green-b:rgba(26,170,122,0.35);--green-t:#4dd4a4;
-  --red:#e05a2b;--red-bg:rgba(224,90,43,0.12);--red-b:rgba(224,90,43,0.35);--red-t:#f08860;
-  --gold:#c9a84c;--gold-bg:rgba(201,168,76,0.12);--gold-b:rgba(201,168,76,0.35);
+  --bg:#0a0d14;--surf:#12161f;--card:#181d2a;--card2:#1e2435;
+  --b:rgba(255,255,255,.07);--bm:rgba(255,255,255,.14);--bh:rgba(255,255,255,.26);
+  --g:#17a870;--gl:rgba(23,168,112,.14);--gb:rgba(23,168,112,.32);--gt:#3ec995;
+  --r:#d95228;--rl:rgba(217,82,40,.14);--rb:rgba(217,82,40,.32);--rt:#f07550;
+  --y:#c4953d;--yl:rgba(196,149,61,.13);--yb:rgba(196,149,61,.32);
+  --tx:#d8dce8;--tm:#636880;--td:#1e2235;
   --danger:#e24b4b;
-  --r:10px;--rl:16px;--rs:6px;
+  --rr:10px;--rrl:16px;--rrs:6px;
 }
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;}
-button{cursor:pointer;font-family:inherit;}
+html,body{min-height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 input{font-family:inherit;}
-.lbl{font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);}
+.scr{display:none;min-height:100dvh;flex-direction:column;}
+.scr.on{display:flex;}
+.back{background:none;border:none;font-size:.8rem;color:var(--tm);cursor:pointer;padding:4px 0;}
+.card{background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);padding:1.25rem;}
 
-/* ── SCREENS ── */
-.screen{display:none;min-height:100dvh;}
-.screen.active{display:flex;flex-direction:column;}
+/* HOME */
+#home{align-items:center;justify-content:center;gap:2.5rem;padding:2rem;text-align:center;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,10vw,5rem);letter-spacing:.08em;line-height:1;
+  background:linear-gradient(135deg,var(--gt),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.mode-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.mode-btn{width:170px;padding:1.75rem 1.25rem;background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);text-align:left;cursor:pointer;transition:all .2s;}
+.mode-btn:hover{border-color:var(--yb);background:var(--yl);}
+.mode-btn .ico{font-size:2rem;margin-bottom:.875rem;display:block;}
+.mode-btn .ttl{font-size:.9375rem;font-weight:600;color:var(--y);margin-bottom:.35rem;}
+.mode-btn .dsc{font-size:.775rem;color:var(--tm);line-height:1.55;}
 
-/* ── HOME ── */
-#home{align-items:center;justify-content:center;gap:2.5rem;padding:2rem;text-align:center;background:var(--bg);}
-.home-title{font-size:clamp(2rem,8vw,3.25rem);font-weight:600;letter-spacing:-.025em;line-height:1.1;}
-.mode-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
-.mode-card{width:185px;padding:1.75rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:var(--rl);text-align:left;transition:border-color .2s,background .2s;cursor:pointer;}
-.mode-card:hover{border-color:var(--gold-b);background:var(--gold-bg);}
-.mode-emoji{font-size:2.25rem;margin-bottom:1rem;line-height:1;}
-.mode-title{font-size:1rem;font-weight:600;color:var(--gold);margin-bottom:.4rem;}
-.mode-desc{font-size:.8rem;color:var(--muted);line-height:1.55;}
+/* PC WAIT */
+#pc-wait{align-items:center;justify-content:center;gap:2rem;padding:2rem;text-align:center;}
+.code-box{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,5.5rem);letter-spacing:.5em;padding-left:.5em;
+  color:var(--y);background:var(--yl);border:1px solid var(--yb);border-radius:var(--rrl);padding:.875rem 2.5rem;}
+.pulse-row{display:flex;align-items:center;gap:.5rem;color:var(--tm);font-size:.875rem;}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--y);animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── SELECT ── */
-#select{background:var(--bg);}
-.sel-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+/* PC DASHBOARD */
+#pc-dash{padding:1.25rem;gap:1.1rem;max-width:920px;margin:0 auto;width:100%;}
+
+/* HUD */
+.hud{display:flex;align-items:center;background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);padding:1rem 1.5rem;gap:.75rem;}
+.hud-side{flex:1;display:flex;align-items:center;gap:.625rem;min-width:0;}
+.hud-side.right{flex-direction:row-reverse;}
+.hud-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hud-hp{font-family:'Bebas Neue',sans-serif;font-size:2.75rem;line-height:1;font-variant-numeric:tabular-nums;min-width:2.5ch;text-align:center;}
+.hud-dots{display:flex;gap:4px;flex-shrink:0;}
+.wdot{width:11px;height:11px;border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+.hud-vs{font-size:.65rem;letter-spacing:.12em;color:var(--td);flex-shrink:0;padding:0 .25rem;}
+
+/* Player info */
+.pinfo-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.pinfo{border-radius:var(--rrl);padding:1.25rem;}
+.pinfo-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.75rem,4vw,2.75rem);letter-spacing:.04em;line-height:1;margin-bottom:.35rem;}
+.pinfo-meta{font-size:.8rem;color:var(--tm);margin-bottom:.75rem;}
+.stat-row{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid var(--b);}
+.stat-row:last-child{border-bottom:none;}
+
+/* Compare */
+.cbar{margin-bottom:1.1rem;}
+.cbar-label{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.25rem;}
+.cbar-nums{display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem;font-weight:500;}
+.cbar-track{display:flex;height:9px;border-radius:5px;overflow:hidden;}
+.cbar-l{flex:1;background:rgba(23,168,112,.08);display:flex;justify-content:flex-end;}
+.cbar-l-fill{height:100%;border-radius:4px 0 0 4px;background:var(--g);transition:width .4s ease;}
+.cbar-sep{width:2px;background:var(--bm);flex-shrink:0;}
+.cbar-r{flex:1;background:rgba(217,82,40,.08);}
+.cbar-r-fill{height:100%;border-radius:0 4px 4px 0;background:var(--r);transition:width .4s ease;}
+
+/* MOBILE CODE */
+#mob-code{align-items:center;justify-content:center;gap:1.5rem;padding:2rem;text-align:center;}
+#mob-code input{width:210px;text-align:center;font-size:2.5rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.4em;padding:.625rem .5rem;
+  background:var(--card);border:1px solid var(--bm);border-radius:var(--rr);color:var(--y);outline:none;}
+#mob-code input:focus{border-color:var(--yb);}
+
+/* MOBILE SELECT */
+#mob-select{min-height:100dvh;}
+.sel-head{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .sel-body{flex:1;display:flex;overflow:hidden;}
-.picker{flex:1;display:flex;flex-direction:column;padding:14px;gap:10px;min-width:0;overflow-y:auto;}
-.picker-divider{width:1px;background:var(--border);flex-shrink:0;}
-.picker input[type=text]{width:100%;padding:9px 11px;background:var(--card);border:1px solid var(--border-md);border-radius:var(--rs);font-size:.875rem;color:var(--text);outline:none;}
-.picker input[type=text]:focus{border-color:var(--gold-b);}
-.dropdown{background:var(--card);border:1px solid var(--border-md);border-radius:var(--rs);max-height:200px;overflow-y:auto;margin-top:3px;}
-.dd-item{padding:8px 11px;font-size:.8125rem;display:flex;justify-content:space-between;cursor:pointer;border-bottom:1px solid var(--border);}
-.dd-item:hover{background:var(--surface);}
+.picker{flex:1;padding:12px;display:flex;flex-direction:column;gap:9px;min-width:0;overflow-y:auto;}
+.picker-div{width:1px;background:var(--b);flex-shrink:0;}
+.picker input[type=text]{width:100%;padding:9px 11px;background:var(--card);border:1px solid var(--bm);border-radius:var(--rrs);font-size:.875rem;color:var(--tx);outline:none;}
+.picker input[type=text]:focus{border-color:var(--yb);}
+.dd{background:var(--card2);border:1px solid var(--bm);border-radius:var(--rrs);margin-top:3px;max-height:190px;overflow-y:auto;}
+.dd-item{padding:8px 11px;font-size:.8125rem;display:flex;justify-content:space-between;cursor:pointer;border-bottom:1px solid var(--b);}
 .dd-item:last-child{border-bottom:none;}
-.ghost-btn{background:none;border:none;font-size:.7rem;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0;text-align:left;}
-.sel-footer{padding:14px 16px;border-top:1px solid var(--border);display:flex;justify-content:center;gap:1rem;flex-shrink:0;}
-.btn-primary{padding:10px 2rem;background:var(--gold-bg);border:1px solid var(--gold-b);color:var(--gold);border-radius:var(--r);font-size:.9375rem;font-weight:500;}
-.btn-primary:disabled{background:transparent;border-color:var(--border);color:var(--dim);cursor:default;}
-.btn-ghost{background:none;border:none;color:var(--muted);font-size:.85rem;}
+.dd-item:hover,.dd-item:active{background:var(--card);}
+.ghost{background:none;border:none;font-size:.7rem;color:var(--tm);text-decoration:underline;cursor:pointer;padding:0;}
+.sel-foot{padding:12px 16px;border-top:1px solid var(--b);display:flex;justify-content:center;gap:1rem;flex-shrink:0;}
+.primary-btn{padding:9px 1.75rem;background:var(--yl);border:1px solid var(--yb);color:var(--y);border-radius:var(--rr);font-size:.9375rem;font-weight:500;}
+.primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
-/* ── MATCH ── */
-#match{flex-direction:row;background:var(--bg);height:100dvh;overflow:hidden;position:relative;}
-.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.625rem;padding:.75rem;min-width:0;}
-.side.flipped{transform:rotate(180deg);}
-.side-name{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
-.win-dots{display:flex;gap:5px;}
-.win-dot{width:12px;height:12px;border-radius:50%;border-width:1.5px;border-style:solid;transition:background .2s;}
-.hp-num{font-size:clamp(3.5rem,13vw,6rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
-.hp-btns{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;width:100%;max-width:215px;}
-.hp-btn{height:48px;border-radius:var(--rs);font-size:.8125rem;font-weight:500;border-width:1px;border-style:solid;}
-.side-divider{width:1px;background:var(--border-md);flex-shrink:0;align-self:stretch;z-index:1;}
-.done-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;padding:6px 14px;font-size:.7rem;letter-spacing:.1em;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--rs);color:var(--muted);white-space:nowrap;}
-.back-corner{position:absolute;top:8px;left:8px;background:none;border:none;color:var(--dim);font-size:.65rem;z-index:5;}
+/* MOBILE MATCH */
+#mob-match{display:none;width:100vw;height:100dvh;overflow:hidden;position:relative;background:var(--bg);}
+#mob-match.on{display:flex;flex-direction:row;}
+.m-side{flex:1;position:relative;overflow:hidden;}
+.m-inner{
+  position:absolute;top:50%;left:50%;
+  width:100dvh;height:50vw;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+}
+.m-side.p1 .m-inner{transform:translate(-50%,-50%) rotate(-90deg);}
+.m-side.p2 .m-inner{transform:translate(-50%,-50%) rotate(90deg);}
+.m-side-div{width:1px;background:var(--bm);flex-shrink:0;z-index:1;}
+.m-name{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%;}
+.m-dots{display:flex;gap:5px;}
+.m-hp{font-family:'Bebas Neue',sans-serif;font-size:clamp(4.5rem,14vw,7rem);line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
+.m-btns{display:flex;gap:6px;}
+.m-btn{width:52px;height:46px;border-radius:var(--rrs);font-size:.875rem;font-weight:600;border-width:1px;border-style:solid;}
+.done-btn-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;
+  padding:5px 12px;font-size:.62rem;letter-spacing:.12em;background:var(--surf);border:1px solid var(--bh);border-radius:var(--rrs);color:var(--tm);white-space:nowrap;}
 
-/* ── WINNER OVERLAY ── */
-#winner-overlay{display:none;position:fixed;inset:0;background:rgba(14,17,24,.9);z-index:50;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
-#winner-overlay.active{display:flex;}
-.winner-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
-.winner-btn{padding:12px 2rem;border-radius:var(--r);font-size:.9375rem;font-weight:600;border-width:1px;border-style:solid;min-width:120px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* ── PC DASHBOARD ── */
-#dashboard{background:var(--bg);padding:1.5rem;gap:1.25rem;max-width:860px;margin:0 auto;width:100%;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;}
-.hp-block{flex:1;text-align:center;padding:.5rem;}
-.hp-block-num{font-size:clamp(2.75rem,7vw,5rem);font-weight:600;line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
-.stat-row{display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem;}
-.p-card{border-radius:var(--rl);padding:1.25rem;}
-.cbar-wrap{margin-bottom:.875rem;}
-.cbar-labels{display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem;}
-.cbar-track{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--surface);gap:2px;}
-.cbar-half{flex:1;}
+/* OVERLAYS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,13,20,.92);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
+.overlay.on{display:flex;}
+.ov-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.ov-btn{padding:12px 2rem;border-radius:var(--rr);font-size:.9375rem;font-weight:600;border-width:1px;border-style:solid;min-width:130px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.match-win-box{background:var(--card);border:1px solid var(--bm);border-radius:var(--rrl);padding:2rem;text-align:center;max-width:340px;width:90%;}
+.match-win-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:.05em;margin:.5rem 0;}
+.err-msg{color:var(--danger);font-size:.8125rem;padding:8px 16px;border:1px solid rgba(226,75,75,.3);border-radius:var(--rrs);background:rgba(226,75,75,.08);}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ HOME ═══════════════════════ -->
-<div id="home" class="screen active">
-  <div>
-    <p class="lbl" style="margin-bottom:.875rem;">TCG TOURNAMENT</p>
-    <h1 class="home-title">Match Tracker</h1>
-    <div style="width:36px;height:1px;background:var(--border-md);margin:1.25rem auto;"></div>
-    <p style="font-size:.875rem;color:var(--muted);">Vyber hráče ze žebříčku a sleduj zápas</p>
-  </div>
-  <div class="mode-grid">
-    <div class="mode-card" onclick="go('select-mobile')">
-      <div class="mode-emoji">📱</div>
-      <div class="mode-title" style="color:var(--green-t);">Mobil</div>
-      <div class="mode-desc">Dva hráči proti sobě – každý ovládá své životy otočenou polovinou</div>
+<!-- HOME -->
+<div id="home" class="scr on">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:2.5rem;padding:2rem;text-align:center;">
+    <div>
+      <div class="logo">Match<br>Tracker</div>
+      <div style="width:40px;height:1px;background:var(--bm);margin:1rem auto .875rem;"></div>
+      <p style="font-size:.875rem;color:var(--tm);">TCG · Realtime · Google Sheets</p>
     </div>
-    <div class="mode-card" onclick="go('select-pc')">
-      <div class="mode-emoji">🖥️</div>
-      <div class="mode-title">PC Dashboard</div>
-      <div class="mode-desc">Přehledný dashboard se statistikami, porovnáním a životy</div>
+    <div class="mode-row">
+      <button class="mode-btn" onclick="goPC()">
+        <span class="ico">🖥️</span>
+        <div class="ttl">Počítač</div>
+        <div class="dsc">Prezentační dashboard – životy + statistiky v reálném čase</div>
+      </button>
+      <button class="mode-btn" onclick="goMobile()">
+        <span class="ico">📱</span>
+        <div class="ttl">Mobil</div>
+        <div class="dsc">Každý hráč ovládá svou otočenou polovinou obrazovky</div>
+      </button>
     </div>
+    <div id="home-status" style="font-size:.75rem;color:var(--tm);"></div>
   </div>
-  <div id="sheets-status" style="font-size:.75rem;color:var(--muted);"></div>
 </div>
 
-<!-- ═══════════════════════ SELECT ═══════════════════════ -->
-<div id="select" class="screen">
-  <div class="sel-header">
+<!-- PC WAIT -->
+<div id="pc-wait" class="scr">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:2rem;padding:2rem;text-align:center;">
+    <div>
+      <p class="lbl" style="margin-bottom:.75rem;">KÓD MÍSTNOSTI</p>
+      <div class="code-box" id="pc-code-disp">—</div>
+    </div>
+    <div class="pulse-row"><div class="pulse"></div><span>Čekám na připojení mobilu…</span></div>
+    <p style="font-size:.8rem;color:var(--tm);max-width:300px;line-height:1.6;">Otevři tuto stránku na mobilu,<br>zvol <strong style="color:var(--tx);">Mobil</strong> a zadej tento kód</p>
+    <button class="back" onclick="cleanupHome()">← Zpět</button>
+  </div>
+</div>
+
+<!-- PC DASHBOARD -->
+<div id="pc-dash" class="scr">
+  <!-- HUD bar -->
+  <div style="padding:1.25rem 1.25rem 0;max-width:920px;margin:0 auto;width:100%;">
+    <div class="hud">
+      <div class="hud-side">
+        <span class="hud-name" id="hud-n1" style="color:var(--gt);"></span>
+        <div class="hud-dots" id="hud-d1"></div>
+        <span class="hud-hp" id="hud-hp1" style="color:var(--gt);">20</span>
+      </div>
+      <span class="hud-vs">VS</span>
+      <div class="hud-side right">
+        <span class="hud-hp" id="hud-hp2" style="color:var(--rt);">20</span>
+        <div class="hud-dots" id="hud-d2"></div>
+        <span class="hud-name" id="hud-n2" style="color:var(--rt);"></span>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:1rem 1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.1rem;max-width:920px;margin:0 auto;width:100%;">
+    <!-- Big name + stats -->
+    <div class="pinfo-row">
+      <div class="pinfo" id="d-p1c" style="background:var(--gl);border:1px solid var(--gb);"></div>
+      <div class="pinfo" id="d-p2c" style="background:var(--rl);border:1px solid var(--rb);"></div>
+    </div>
+    <!-- Compare -->
+    <div class="card" id="d-cmp" style="display:none;">
+      <p class="lbl" style="text-align:center;margin-bottom:1.25rem;">POROVNÁNÍ</p>
+      <div id="d-bars"></div>
+    </div>
+    <div><button class="back" onclick="cleanupHome()">← Nový zápas</button></div>
+  </div>
+</div>
+
+<!-- MOBILE CODE -->
+<div id="mob-code" class="scr">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:1.5rem;padding:2rem;text-align:center;">
+    <div>
+      <p class="lbl" style="margin-bottom:.5rem;">MOBIL</p>
+      <h2 style="font-size:1.5rem;font-weight:600;">Zadej kód místnosti</h2>
+    </div>
+    <input id="mob-inp" type="tel" inputmode="numeric" maxlength="5" placeholder="12345"
+      oninput="this.value=this.value.replace(/\D/g,'');chkJoin()"
+      onkeydown="if(event.key==='Enter')joinRoom()"/>
+    <div id="mob-err" class="err-msg" style="display:none;"></div>
+    <button class="primary-btn" id="join-btn" onclick="joinRoom()" disabled>Připojit</button>
+    <button class="back" onclick="cleanupHome()">← Zpět</button>
+  </div>
+</div>
+
+<!-- MOBILE SELECT -->
+<div id="mob-sel" class="scr">
+  <div class="sel-head">
     <p class="lbl">VÝBĚR HRÁČŮ</p>
-    <button class="btn-ghost" onclick="go('home')">← Zpět</button>
+    <span id="sel-status" style="font-size:.7rem;color:var(--tm);"></span>
   </div>
-  <div id="sheets-err" style="display:none;padding:10px 16px;font-size:.8rem;color:var(--danger);border-bottom:1px solid var(--border);">
-    ⚠ Nepodařilo se načíst hráčská data ze Sheets. Hráče zadej ručně.
-  </div>
+  <div id="sel-err" style="display:none;padding:9px 14px;font-size:.78rem;color:var(--danger);border-bottom:1px solid var(--b);">⚠ Data ze Sheets nedostupná</div>
   <div class="sel-body">
-    <div class="picker" id="picker1">
-      <p class="lbl" id="p1lbl">HRÁČ 1</p>
+    <div class="picker">
+      <p class="lbl" style="color:var(--gt);">HRÁČ 1</p>
       <div style="position:relative;">
-        <input type="text" id="q1" placeholder="Vyhledat hráče…" oninput="filter(1)" onfocus="openDrop(1)" onblur="closeDrop(1,300)"/>
-        <div class="dropdown" id="dd1" style="display:none;position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:20;"></div>
+        <input type="text" id="q1" placeholder="Vyhledat…" oninput="fDrop(1)" onfocus="oDrop(1)" onblur="cDrop(1)"/>
+        <div class="dd" id="dd1" style="display:none;position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:20;"></div>
       </div>
-      <div id="p1info" style="font-size:.75rem;color:var(--muted);display:none;"></div>
-      <button class="ghost-btn" id="p1nil-btn" onclick="setNil(1)">Nejsem v seznamu</button>
-      <div id="p1nil-badge" style="display:none;font-size:.8125rem;color:var(--muted);background:var(--surface);padding:8px 10px;border-radius:var(--rs);text-align:center;">
-        Neznámý hráč<br>
-        <button class="ghost-btn" onclick="clearNil(1)" style="margin-top:4px;">↩ Zpět</button>
+      <div id="p1info" style="font-size:.75rem;color:var(--tm);display:none;"></div>
+      <button class="ghost" id="p1nb" onclick="sNil(1)">Nejsem v seznamu</button>
+      <div id="p1nb2" style="display:none;padding:8px 10px;background:var(--surf);border-radius:var(--rrs);font-size:.8125rem;color:var(--tm);text-align:center;">
+        Neznámý hráč<br><button class="ghost" onclick="cNil(1)" style="margin-top:4px;">↩ Zpět</button>
       </div>
     </div>
-    <div class="picker-divider"></div>
-    <div class="picker" id="picker2">
-      <p class="lbl" id="p2lbl">HRÁČ 2</p>
+    <div class="picker-div"></div>
+    <div class="picker">
+      <p class="lbl" style="color:var(--rt);">HRÁČ 2</p>
       <div style="position:relative;">
-        <input type="text" id="q2" placeholder="Vyhledat hráče…" oninput="filter(2)" onfocus="openDrop(2)" onblur="closeDrop(2,300)"/>
-        <div class="dropdown" id="dd2" style="display:none;position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:20;"></div>
+        <input type="text" id="q2" placeholder="Vyhledat…" oninput="fDrop(2)" onfocus="oDrop(2)" onblur="cDrop(2)"/>
+        <div class="dd" id="dd2" style="display:none;position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:20;"></div>
       </div>
-      <div id="p2info" style="font-size:.75rem;color:var(--muted);display:none;"></div>
-      <button class="ghost-btn" id="p2nil-btn" onclick="setNil(2)">Nejsem v seznamu</button>
-      <div id="p2nil-badge" style="display:none;font-size:.8125rem;color:var(--muted);background:var(--surface);padding:8px 10px;border-radius:var(--rs);text-align:center;">
-        Neznámý hráč<br>
-        <button class="ghost-btn" onclick="clearNil(2)" style="margin-top:4px;">↩ Zpět</button>
+      <div id="p2info" style="font-size:.75rem;color:var(--tm);display:none;"></div>
+      <button class="ghost" id="p2nb" onclick="sNil(2)">Nejsem v seznamu</button>
+      <div id="p2nb2" style="display:none;padding:8px 10px;background:var(--surf);border-radius:var(--rrs);font-size:.8125rem;color:var(--tm);text-align:center;">
+        Neznámý hráč<br><button class="ghost" onclick="cNil(2)" style="margin-top:4px;">↩ Zpět</button>
       </div>
     </div>
   </div>
-  <div class="sel-footer">
-    <button class="btn-primary" id="start-btn" disabled onclick="startMatch()">▶ Hrát</button>
+  <div class="sel-foot">
+    <button class="back" onclick="cleanupHome()">← Zpět</button>
+    <button class="primary-btn" id="start-btn" onclick="startMatch()" disabled>▶ Hrát</button>
   </div>
 </div>
 
-<!-- ═══════════════════════ MATCH (MOBIL) ═══════════════════════ -->
-<div id="match" class="screen">
-  <button class="back-corner" onclick="go('home')">←</button>
-
-  <!-- Hráč 1 – levá strana -->
-  <div class="side" id="side1">
-    <p class="side-name" id="m-p1name" style="color:var(--green-t);"></p>
-    <div class="win-dots" id="m-p1dots"></div>
-    <div class="hp-num" id="m-p1hp" style="color:var(--green-t);">20</div>
-    <div class="hp-btns">
-      <button class="hp-btn" onclick="changeHP(1,5)"  style="background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);">+5</button>
-      <button class="hp-btn" onclick="changeHP(1,1)"  style="background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);">+1</button>
-      <button class="hp-btn" onclick="changeHP(1,-1)" style="background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);">−1</button>
-      <button class="hp-btn" onclick="changeHP(1,-5)" style="background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);">−5</button>
+<!-- MOBILE MATCH -->
+<div id="mob-match" class="scr">
+  <div class="m-side p1">
+    <div class="m-inner">
+      <p class="m-name" id="m-n1" style="color:var(--gt);"></p>
+      <div class="m-dots" id="m-d1"></div>
+      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
+      <div class="m-btns">
+        <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+        <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+        <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">−1</button>
+        <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">−5</button>
+      </div>
     </div>
   </div>
-
-  <div class="side-divider"></div>
-
-  <!-- Hráč 2 – pravá strana, otočená -->
-  <div class="side flipped" id="side2">
-    <p class="side-name" id="m-p2name" style="color:var(--red-t);"></p>
-    <div class="win-dots" id="m-p2dots"></div>
-    <div class="hp-num" id="m-p2hp" style="color:var(--red-t);">20</div>
-    <div class="hp-btns">
-      <button class="hp-btn" onclick="changeHP(2,5)"  style="background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);">+5</button>
-      <button class="hp-btn" onclick="changeHP(2,1)"  style="background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);">+1</button>
-      <button class="hp-btn" onclick="changeHP(2,-1)" style="background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);">−1</button>
-      <button class="hp-btn" onclick="changeHP(2,-5)" style="background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);">−5</button>
+  <div class="m-side-div"></div>
+  <div class="m-side p2">
+    <div class="m-inner">
+      <p class="m-name" id="m-n2" style="color:var(--rt);"></p>
+      <div class="m-dots" id="m-d2"></div>
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+      <div class="m-btns">
+        <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+        <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+        <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">−1</button>
+        <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">−5</button>
+      </div>
     </div>
   </div>
-
-  <button class="done-btn" onclick="showWinner()">DOHRÁNO</button>
+  <button class="done-btn-center" onclick="showOv('ov-win')">DOHRÁNO</button>
 </div>
 
-<!-- ═══════════════════════ WINNER OVERLAY ═══════════════════════ -->
-<div id="winner-overlay">
+<!-- OVERLAY: výběr vítěze hry -->
+<div id="ov-win" class="overlay">
   <p class="lbl">KDO VYHRÁL HRU?</p>
-  <div class="winner-btns">
-    <button class="winner-btn" id="wbtn1" onclick="declareWinner(1)" style="background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);"></button>
-    <button class="winner-btn" id="wbtn2" onclick="declareWinner(2)" style="background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);"></button>
+  <div class="ov-btns">
+    <button class="ov-btn" id="wb1" onclick="declWin(1)" style="background:var(--gl);border-color:var(--gb);color:var(--gt);"></button>
+    <button class="ov-btn" id="wb2" onclick="declWin(2)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);"></button>
   </div>
-  <button class="btn-ghost" onclick="hideWinner()">Zrušit</button>
+  <button class="back" onclick="hideOv('ov-win')">Zrušit</button>
 </div>
 
-<!-- ═══════════════════════ PC DASHBOARD ═══════════════════════ -->
-<div id="dashboard" class="screen">
-  <!-- Hlavička -->
-  <div style="display:flex;align-items:center;justify-content:space-between;">
-    <p class="lbl">MATCH TRACKER</p>
-    <button class="btn-ghost" onclick="go('home')">← Zpět</button>
-  </div>
-
-  <!-- HP karta -->
-  <div class="card" style="display:flex;align-items:center;">
-    <div class="hp-block">
-      <p class="lbl" id="d-p1lbl" style="color:var(--green-t);margin-bottom:.5rem;"></p>
-      <div style="display:flex;justify-content:center;gap:5px;margin-bottom:.5rem;" id="d-p1dots"></div>
-      <div class="hp-block-num" id="d-p1hp" style="color:var(--green-t);">20</div>
-      <div style="display:flex;justify-content:center;gap:6px;margin-top:.75rem;flex-wrap:wrap;">
-        <button class="hp-btn" onclick="changeHP(1,5)"  style="width:44px;height:40px;background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);font-size:.75rem;border-radius:var(--rs);">+5</button>
-        <button class="hp-btn" onclick="changeHP(1,1)"  style="width:44px;height:40px;background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);font-size:.75rem;border-radius:var(--rs);">+1</button>
-        <button class="hp-btn" onclick="changeHP(1,-1)" style="width:44px;height:40px;background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);font-size:.75rem;border-radius:var(--rs);">−1</button>
-        <button class="hp-btn" onclick="changeHP(1,-5)" style="width:44px;height:40px;background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);font-size:.75rem;border-radius:var(--rs);">−5</button>
-      </div>
-    </div>
-    <div style="text-align:center;padding:0 1rem;flex-shrink:0;color:var(--dim);font-size:1.25rem;">⚔</div>
-    <div class="hp-block">
-      <p class="lbl" id="d-p2lbl" style="color:var(--red-t);margin-bottom:.5rem;"></p>
-      <div style="display:flex;justify-content:center;gap:5px;margin-bottom:.5rem;" id="d-p2dots"></div>
-      <div class="hp-block-num" id="d-p2hp" style="color:var(--red-t);">20</div>
-      <div style="display:flex;justify-content:center;gap:6px;margin-top:.75rem;flex-wrap:wrap;">
-        <button class="hp-btn" onclick="changeHP(2,5)"  style="width:44px;height:40px;background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);font-size:.75rem;border-radius:var(--rs);">+5</button>
-        <button class="hp-btn" onclick="changeHP(2,1)"  style="width:44px;height:40px;background:var(--green-bg);border-color:var(--green-b);color:var(--green-t);font-size:.75rem;border-radius:var(--rs);">+1</button>
-        <button class="hp-btn" onclick="changeHP(2,-1)" style="width:44px;height:40px;background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);font-size:.75rem;border-radius:var(--rs);">−1</button>
-        <button class="hp-btn" onclick="changeHP(2,-5)" style="width:44px;height:40px;background:var(--red-bg);border-color:var(--red-b);color:var(--red-t);font-size:.75rem;border-radius:var(--rs);">−5</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tlačítko Dohráno -->
-  <div style="display:flex;justify-content:center;">
-    <button class="done-btn" style="position:static;transform:none;padding:8px 2rem;font-size:.8rem;" onclick="showWinner()">DOHRÁNO</button>
-  </div>
-
-  <!-- Hráči -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-    <div class="p-card" id="d-p1card" style="background:var(--green-bg);border:1px solid var(--green-b);"></div>
-    <div class="p-card" id="d-p2card" style="background:var(--red-bg);border:1px solid var(--red-b);"></div>
-  </div>
-
-  <!-- Porovnání -->
-  <div class="card" id="d-compare" style="display:none;">
-    <p class="lbl" style="text-align:center;margin-bottom:1.25rem;">POROVNÁNÍ STATISTIK</p>
-    <div id="d-bars"></div>
+<!-- OVERLAY: vítěz matche BO3 -->
+<div id="ov-match" class="overlay">
+  <div class="match-win-box">
+    <p class="lbl" style="margin-bottom:.5rem;">VÍTĚZ MATCHE</p>
+    <div class="match-win-name" id="match-win-nm"></div>
+    <p style="font-size:.8rem;color:var(--tm);margin:.375rem 0 1.5rem;">vyhrál BO3!</p>
+    <button class="primary-btn" onclick="resetToSel()" style="width:100%;">Nový výběr hráčů →</button>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════
+// ── CONFIG ─────────────────────────────────────────
+// Toto je tvůj Firebase projekt z dc-elo-life-tracker
+// Pokud chceš jiný projekt, změň DB_URL
 const SHEET_ID = '1y98bzsIRpVv0_cGNfbITapucO5A6izeEz5lTM92ZbIA'
-let players = []
-let maxStats = {elo:1,games:1,wins:1,peakElo:1}
+const DB_URL = 'https://dc-elo-life-tracker-default-rtdb.europe-west1.firebasedatabase.app'
 
-let state = {
-  p1: null, p2: null,
-  p1nil: false, p2nil: false,
-  p1hp: 20, p2hp: 20,
-  p1wins: 0, p2wins: 0,
-  mode: 'mobile'  // 'mobile' | 'pc'
+// ── STATE ──────────────────────────────────────────
+let players=[], maxS={elo:1,games:1,wins:1,peakElo:1}
+let S={mode:'',code:'',room:null,es:null,p1:null,p2:null,p1nil:false,p2nil:false,p1hp:20,p2hp:20,p1w:0,p2w:0}
+let ddTimer={}
+
+// ── FIREBASE REST ──────────────────────────────────
+async function dbSet(p,d){await fetch(`${DB_URL}/${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
+async function dbPatch(p,d){await fetch(`${DB_URL}/${p}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
+async function dbGet(p){const r=await fetch(`${DB_URL}/${p}.json`);return r.ok?r.json():null}
+
+function dbSub(path,cb){
+  if(S.es){S.es.close();S.es=null}
+  const es=new EventSource(`${DB_URL}/${path}.json`)
+  es.addEventListener('put',e=>{
+    try{const {path:pp,data}=JSON.parse(e.data);if(pp==='/'||pp===''){S.room=data}else applyPath(S.room,pp,data);cb(S.room)}catch(ex){}
+  })
+  es.addEventListener('patch',e=>{
+    try{const {data}=JSON.parse(e.data);if(S.room&&data)Object.assign(S.room,data);cb(S.room)}catch(ex){}
+  })
+  S.es=es
+}
+function applyPath(obj,path,val){
+  if(!obj)return
+  const parts=path.replace(/^\//,'').split('/').filter(Boolean)
+  let cur=obj
+  for(let i=0;i<parts.length-1;i++){if(cur[parts[i]]===undefined)cur[parts[i]]={};cur=cur[parts[i]]}
+  if(parts.length)cur[parts[parts.length-1]]=val
 }
 
-// ── Sheets načtení ─────────────────────────────
-async function loadPlayers() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`
-  try {
-    const res = await fetch(url)
-    if (!res.ok) throw new Error()
-    const csv = await res.text()
-    const rows = csv.trim().split('\n').slice(1)
-    const data = []
-    for (const row of rows) {
-      const c = parseCSV(row)
-      const name = c[0]?.trim()
-      if (!name || name.toLowerCase() === 'player') continue
-      data.push({
-        name,
-        elo: +c[1] || 0,
-        games: +c[2] || 0,
-        wins: +c[3] || 0,
-        losses: +c[4] || 0,
-        winrate: +c[5] || 0,
-        draws: +c[6] || 0,
-        peakElo: +c[7] || 0,
-        rank: 0
-      })
+// ── SHEETS ─────────────────────────────────────────
+async function loadPlayers(){
+  try{
+    const res=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`)
+    if(!res.ok)throw 0
+    const rows=(await res.text()).trim().split('\n').slice(1)
+    const data=[]
+    for(const row of rows){
+      const c=csvRow(row);const name=c[0]?.trim()
+      if(!name||name.toLowerCase()==='player')continue
+      data.push({name,elo:+c[1]||0,games:+c[2]||0,wins:+c[3]||0,losses:+c[4]||0,winrate:+c[5]||0,draws:+c[6]||0,peakElo:+c[7]||0,rank:0})
     }
-    data.sort((a,b) => b.elo - a.elo)
-    data.forEach((p,i) => p.rank = i + 1)
-    players = data
-    maxStats = {
-      elo: Math.max(...data.map(p=>p.elo), 1),
-      games: Math.max(...data.map(p=>p.games), 1),
-      wins: Math.max(...data.map(p=>p.wins), 1),
-      peakElo: Math.max(...data.map(p=>p.peakElo), 1)
-    }
-    document.getElementById('sheets-status').textContent = `● ${data.length} hráčů načteno ze Sheets`
-    document.getElementById('sheets-status').style.color = 'var(--green-t)'
-  } catch {
-    document.getElementById('sheets-status').textContent = '○ Data ze Sheets nedostupná'
-    document.getElementById('sheets-err').style.display = 'block'
+    data.sort((a,b)=>b.elo-a.elo);data.forEach((p,i)=>p.rank=i+1);players=data
+    maxS={elo:Math.max(...data.map(p=>p.elo),1),games:Math.max(...data.map(p=>p.games),1),wins:Math.max(...data.map(p=>p.wins),1),peakElo:Math.max(...data.map(p=>p.peakElo),1)}
+    setText('home-status',`● ${data.length} hráčů ze Sheets`,'var(--gt)')
+    setText('sel-status',`● ${data.length} hráčů`,'var(--gt)')
+  }catch{
+    setText('home-status','○ Sheets nedostupné','var(--tm)')
+    show('sel-err')
+  }
+}
+function csvRow(row){const r=[];let cur='',q=false;for(const c of row){if(c==='"')q=!q;else if(c===','&&!q){r.push(cur.trim());cur=''}else cur+=c}r.push(cur.trim());return r}
+
+// ── UTILS ──────────────────────────────────────────
+function showScr(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));el(id).classList.add('on')}
+function el(id){return document.getElementById(id)}
+function setText(id,t,c){const e=el(id);if(e){e.textContent=t;if(c)e.style.color=c}}
+function show(id){el(id).style.display='block'}
+function hide(id){el(id).style.display='none'}
+function showOv(id){el(id).classList.add('on')}
+function hideOv(id){el(id).classList.remove('on')}
+
+function dots(wins,col){return[1,2].map(i=>`<span class="wdot" style="border-color:${col};background:${wins>=i?col:'transparent'};"></span>`).join('')}
+
+function cleanupHome(){
+  if(S.es){S.es.close();S.es=null}
+  S.room=null;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false;S.p1hp=20;S.p2hp=20;S.p1w=0;S.p2w=0
+  hideOv('ov-win');hideOv('ov-match')
+  showScr('home')
+}
+
+// ── PC FLOW ────────────────────────────────────────
+async function goPC(){
+  S.mode='pc'
+  const code=String(10000+Math.floor(Math.random()*90000));S.code=code
+  el('pc-code-disp').textContent=code
+  showScr('pc-wait')
+  try{
+    await dbSet(`rooms/${code}`,{code,pcOK:true,mobOK:false,p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'waiting',ts:Date.now()})
+    dbSub(`rooms/${code}`,onPCRoom)
+  }catch(e){alert('Firebase chyba: '+e.message+'\n\nZkontroluj DB_URL a pravidla Firebase (test mode).')}
+}
+
+function onPCRoom(room){
+  if(!room)return;S.room=room
+  if(room.status==='selecting'||room.status==='playing'||room.status==='match-over'){
+    renderPCDash();showScr('pc-dash')
   }
 }
 
-function parseCSV(row) {
-  const r = []; let cur = '', inQ = false
-  for (let i = 0; i < row.length; i++) {
-    const c = row[i]
-    if (c === '"') { inQ = !inQ }
-    else if (c === ',' && !inQ) { r.push(cur.trim()); cur = '' }
-    else cur += c
-  }
-  r.push(cur.trim())
-  return r
+function renderPCDash(){
+  const r=S.room;if(!r)return
+  const p1=r.p1,p2=r.p2,n1=p1?.name||'Hráč 1',n2=p2?.name||'Hráč 2'
+  const hp1=r.p1hp??20,hp2=r.p2hp??20,w1=r.p1w??0,w2=r.p2w??0
+
+  setText('hud-n1',n1);setText('hud-n2',n2)
+  hudHP(1,hp1);hudHP(2,hp2)
+  el('hud-d1').innerHTML=dots(w1,'var(--g)')
+  el('hud-d2').innerHTML=dots(w2,'var(--r)')
+
+  el('d-p1c').innerHTML=pCard(p1,'var(--gt)','HRÁČ 1')
+  el('d-p2c').innerHTML=pCard(p2,'var(--rt)','HRÁČ 2')
+
+  const cmp=el('d-cmp')
+  if(p1?.inList&&p2?.inList){
+    cmp.style.display='block'
+    el('d-bars').innerHTML=[
+      {l:'ELO',v1:p1.elo,v2:p2.elo,mx:maxS.elo},
+      {l:'Počet her',v1:p1.games,v2:p2.games,mx:maxS.games},
+      {l:'Výhry',v1:p1.wins,v2:p2.wins,mx:maxS.wins},
+      {l:'Winrate %',v1:+(p1.winrate||0).toFixed(1),v2:+(p2.winrate||0).toFixed(1),mx:100},
+      {l:'Peak ELO',v1:p1.peakElo,v2:p2.peakElo,mx:maxS.peakElo},
+    ].map(b=>cBar(b.l,b.v1,b.v2,b.mx)).join('')
+  }else cmp.style.display='none'
 }
 
-// ══════════════════════════════════════════════
-// NAVIGACE
-// ══════════════════════════════════════════════
-function go(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
-
-  if (screen === 'select-mobile' || screen === 'select-pc') {
-    state.mode = screen === 'select-mobile' ? 'mobile' : 'pc'
-    state.p1 = null; state.p2 = null
-    state.p1nil = false; state.p2nil = false
-    state.p1hp = 20; state.p2hp = 20
-    state.p1wins = 0; state.p2wins = 0
-
-    // Barvy pickerů podle módu
-    const p1color = 'var(--green-t)'
-    const p2color = state.mode === 'mobile' ? 'var(--red-t)' : 'var(--red-t)'
-    document.getElementById('p1lbl').style.color = p1color
-    document.getElementById('p2lbl').style.color = p2color
-
-    resetPicker(1); resetPicker(2)
-    document.getElementById('start-btn').disabled = true
-    document.getElementById('select').classList.add('active')
-  } else if (screen === 'home') {
-    document.getElementById('home').classList.add('active')
-  }
+function hudHP(n,hp){
+  const lo=hp<=5,col=lo?'var(--danger)':(n===1?'var(--gt)':'var(--rt)')
+  const e=el(`hud-hp${n}`);if(e){e.textContent=hp;e.style.color=col}
 }
 
-// ══════════════════════════════════════════════
-// PICKER LOGIKA
-// ══════════════════════════════════════════════
-let dropTimers = {}
-
-function filter(n) {
-  const q = document.getElementById(`q${n}`).value.toLowerCase()
-  const p = n === 1 ? state.p1 : state.p2
-  if (p) { // clear selection if typing
-    if (n === 1) state.p1 = null
-    else state.p2 = null
-    document.getElementById(`p${n}info`).style.display = 'none'
-    document.getElementById(`q${n}`).style.borderColor = ''
-  }
-  renderDrop(n, q)
-  checkStartBtn()
+function pCard(p,ct,lbl){
+  if(!p)return`<p class="lbl" style="color:${ct};margin-bottom:.625rem;">${lbl}</p><p style="font-size:.875rem;color:var(--tm);">Čekám na výběr…</p>`
+  const stats=p.inList?[
+    ['Pořadí',`#${p.rank}`],['ELO',p.elo],['Počet her',p.games],['Výhry',p.wins],
+    ['Prohry',p.losses],['Remízy',p.draws],['Winrate',`${(p.winrate||0).toFixed(1)}%`],['Peak ELO',p.peakElo]
+  ].map(([l,v])=>`<div class="stat-row"><span style="color:var(--tm);">${l}</span><span style="color:${ct};font-weight:500;">${v}</span></div>`).join('')
+  :`<p style="font-size:.8rem;color:var(--tm);">Není v žebříčku</p>`
+  return`<p class="lbl" style="color:${ct};margin-bottom:.5rem;">${lbl}</p>
+    <p class="pinfo-name" style="color:${ct};">${p.name}</p>
+    ${p.inList?`<p class="pinfo-meta">#${p.rank} · ${p.elo} ELO · ${(p.winrate||0).toFixed(0)}% WR</p>`:''}
+    ${stats}`
 }
 
-function openDrop(n) {
-  const q = document.getElementById(`q${n}`).value.toLowerCase()
-  renderDrop(n, q)
+function cBar(lbl,v1,v2,mx){
+  const w1=mx>0?Math.min(v1/mx*100,100):0,w2=mx>0?Math.min(v2/mx*100,100):0
+  const f=v=>v%1?v.toFixed(1):v
+  return`<div class="cbar">
+    <p class="cbar-label">${lbl}</p>
+    <div class="cbar-nums"><span style="color:var(--gt);">${f(v1)}</span><span style="color:var(--rt);">${f(v2)}</span></div>
+    <div class="cbar-track">
+      <div class="cbar-l"><div class="cbar-l-fill" style="width:${w1}%;"></div></div>
+      <div class="cbar-sep"></div>
+      <div class="cbar-r"><div class="cbar-r-fill" style="width:${w2}%;"></div></div>
+    </div>
+  </div>`
 }
 
-function closeDrop(n, delay) {
-  dropTimers[n] = setTimeout(() => {
-    document.getElementById(`dd${n}`).style.display = 'none'
-  }, delay)
+// ── MOBILE FLOW ────────────────────────────────────
+function goMobile(){
+  S.mode='mobile'
+  el('mob-inp').value='';hide('mob-err');el('join-btn').disabled=true
+  showScr('mob-code')
+}
+function chkJoin(){el('join-btn').disabled=el('mob-inp').value.length!==5}
+
+async function joinRoom(){
+  const code=el('mob-inp').value.trim();if(code.length!==5)return
+  hide('mob-err');el('join-btn').textContent='Připojuji…';el('join-btn').disabled=true
+  try{
+    const room=await dbGet(`rooms/${code}`)
+    if(!room){el('mob-err').textContent='Místnost nenalezena.';show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false;return}
+    S.code=code;S.room=room
+    await dbPatch(`rooms/${code}`,{mobOK:true,status:'selecting'})
+    rPicker(1);rPicker(2);el('start-btn').disabled=true
+    setText('sel-status',players.length?`● ${players.length} hráčů`:'○','var(--gt)')
+    showScr('mob-sel')
+    el('join-btn').textContent='Připojit'
+  }catch(e){el('mob-err').textContent='Chyba: '+e.message;show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false}
 }
 
-function renderDrop(n, q) {
-  const dd = document.getElementById(`dd${n}`)
-  const filtered = players.filter(p => p.name.toLowerCase().includes(q)).slice(0, 8)
-  if (!filtered.length) { dd.style.display = 'none'; return }
-  dd.innerHTML = filtered.map((p, i) =>
-    `<div class="dd-item" onmousedown="pickPlayer(${n},${players.indexOf(p)})">
-      <span>${p.name}</span>
-      <span style="color:${n===1?'var(--green-t)':'var(--red-t)'};font-weight:500;font-size:.75rem;">${p.elo}</span>
-    </div>`
-  ).join('')
-  dd.style.display = 'block'
+// ── PICKER ─────────────────────────────────────────
+function fDrop(n){const q=el(`q${n}`).value.toLowerCase();if(n===1){S.p1=null;hide('p1info')}else{S.p2=null;hide('p2info')};rDrop(n,q);chkStart()}
+function oDrop(n){rDrop(n,el(`q${n}`).value.toLowerCase())}
+function cDrop(n){ddTimer[n]=setTimeout(()=>{const d=el(`dd${n}`);if(d)d.style.display='none'},200)}
+
+function rDrop(n,q){
+  const dd=el(`dd${n}`),filtered=players.filter(p=>p.name.toLowerCase().includes(q)).slice(0,8)
+  if(!filtered.length){dd.style.display='none';return}
+  const col=n===1?'var(--gt)':'var(--rt)'
+  dd.innerHTML=filtered.map(p=>`<div class="dd-item" onmousedown="pickP(${n},${players.indexOf(p)})"><span>${p.name}</span><span style="color:${col};font-size:.75rem;font-weight:600;">${p.elo}</span></div>`).join('')
+  dd.style.display='block'
 }
 
-function pickPlayer(n, idx) {
-  const p = players[idx]
-  if (!p) return
-  if (n === 1) { state.p1 = p; state.p1nil = false }
-  else { state.p2 = p; state.p2nil = false }
-  document.getElementById(`q${n}`).value = p.name
-  document.getElementById(`q${n}`).style.borderColor = n===1?'var(--green-b)':'var(--red-b)'
-  const info = document.getElementById(`p${n}info`)
-  info.textContent = `#${p.rank} · ${p.elo} ELO · WR ${p.winrate.toFixed(0)}%`
-  info.style.display = 'block'
-  document.getElementById(`dd${n}`).style.display = 'none'
-  checkStartBtn()
+function pickP(n,idx){
+  clearTimeout(ddTimer[n]);const p=players[idx];if(!p)return
+  const col=n===1?'var(--gb)':'var(--rb)',info=`#${p.rank} · ${p.elo} ELO · WR ${p.winrate.toFixed(0)}%`
+  if(n===1){S.p1=p;el('q1').value=p.name;el('q1').style.borderColor=col;el('p1info').textContent=info;el('p1info').style.display='block'}
+  else{S.p2=p;el('q2').value=p.name;el('q2').style.borderColor=col;el('p2info').textContent=info;el('p2info').style.display='block'}
+  el(`dd${n}`).style.display='none';chkStart()
 }
 
-function setNil(n) {
-  if (n === 1) { state.p1nil = true; state.p1 = null }
-  else { state.p2nil = true; state.p2 = null }
-  document.getElementById(`p${n}nil-badge`).style.display = 'block'
-  document.getElementById(`p${n}nil-btn`).style.display = 'none'
-  document.getElementById(`q${n}`).style.display = 'none'
-  document.getElementById(`p${n}info`).style.display = 'none'
-  document.getElementById(`dd${n}`).style.display = 'none'
-  checkStartBtn()
+function sNil(n){
+  if(n===1){S.p1nil=true;S.p1=null}else{S.p2nil=true;S.p2=null}
+  el(`p${n}nb2`).style.display='block';el(`p${n}nb`).style.display='none'
+  el(`q${n}`).style.display='none';el(`dd${n}`).style.display='none';el(`p${n}info`).style.display='none'
+  chkStart()
+}
+function cNil(n){
+  if(n===1)S.p1nil=false;else S.p2nil=false
+  el(`p${n}nb2`).style.display='none';el(`p${n}nb`).style.display='block';el(`q${n}`).style.display='block';chkStart()
+}
+function rPicker(n){
+  S[`p${n}`]=null;S[`p${n}nil`]=false
+  const q=el(`q${n}`);q.value='';q.style.borderColor='';q.style.display='block'
+  el(`dd${n}`).style.display='none';el(`p${n}info`).style.display='none'
+  el(`p${n}nb`).style.display='block';el(`p${n}nb2`).style.display='none'
+}
+function chkStart(){el('start-btn').disabled=!((S.p1||S.p1nil)&&(S.p2||S.p2nil))}
+
+function toRP(p,nil,fb){
+  if(nil||!p)return{name:fb,inList:false,rank:0,elo:0,games:0,wins:0,losses:0,draws:0,winrate:0,peakElo:0}
+  return{name:p.name,inList:true,rank:p.rank,elo:p.elo,games:p.games,wins:p.wins,losses:p.losses,draws:p.draws,winrate:p.winrate,peakElo:p.peakElo}
 }
 
-function clearNil(n) {
-  if (n === 1) state.p1nil = false
-  else state.p2nil = false
-  document.getElementById(`p${n}nil-badge`).style.display = 'none'
-  document.getElementById(`p${n}nil-btn`).style.display = 'block'
-  document.getElementById(`q${n}`).style.display = 'block'
-  checkStartBtn()
+// ── MATCH ──────────────────────────────────────────
+async function startMatch(){
+  S.p1hp=20;S.p2hp=20;S.p1w=0;S.p2w=0
+  const rp1=toRP(S.p1,S.p1nil,'Hráč 1'),rp2=toRP(S.p2,S.p2nil,'Hráč 2')
+  await dbPatch(`rooms/${S.code}`,{p1:rp1,p2:rp2,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'playing'})
+  el('m-n1').textContent=rp1.name;el('m-n2').textContent=rp2.name
+  el('wb1').textContent=rp1.name;el('wb2').textContent=rp2.name
+  mRHP(1);mRHP(2);mRDots(1);mRDots(2)
+  showScr('mob-match')
 }
 
-function resetPicker(n) {
-  document.getElementById(`q${n}`).value = ''
-  document.getElementById(`q${n}`).style.borderColor = ''
-  document.getElementById(`q${n}`).style.display = 'block'
-  document.getElementById(`dd${n}`).style.display = 'none'
-  document.getElementById(`p${n}info`).style.display = 'none'
-  document.getElementById(`p${n}nil-btn`).style.display = 'block'
-  document.getElementById(`p${n}nil-badge`).style.display = 'none'
+function mRHP(n){
+  const hp=n===1?S.p1hp:S.p2hp,lo=hp<=5
+  const e=el(`m-hp${n}`);e.textContent=hp;e.style.color=lo?'var(--danger)':(n===1?'var(--gt)':'var(--rt)')
+}
+function mRDots(n){
+  const w=n===1?S.p1w:S.p2w,col=n===1?'var(--g)':'var(--r)'
+  el(`m-d${n}`).innerHTML=[1,2].map(i=>`<span class="wdot" style="border-color:${col};background:${w>=i?col:'transparent'};width:13px;height:13px;"></span>`).join('')
 }
 
-function checkStartBtn() {
-  const ok = (state.p1 || state.p1nil) && (state.p2 || state.p2nil)
-  document.getElementById('start-btn').disabled = !ok
+async function chHP(n,d){
+  if(n===1){S.p1hp=Math.max(-99,S.p1hp+d);await dbPatch(`rooms/${S.code}`,{p1hp:S.p1hp})}
+  else{S.p2hp=Math.max(-99,S.p2hp+d);await dbPatch(`rooms/${S.code}`,{p2hp:S.p2hp})}
+  mRHP(n)
 }
 
-// ══════════════════════════════════════════════
-// SPUŠTĚNÍ ZÁPASU
-// ══════════════════════════════════════════════
-function startMatch() {
-  state.p1hp = 20; state.p2hp = 20
-  state.p1wins = 0; state.p2wins = 0
-
-  const n1 = state.p1?.name ?? 'Hráč 1'
-  const n2 = state.p2?.name ?? 'Hráč 2'
-
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
-
-  if (state.mode === 'mobile') {
-    document.getElementById('m-p1name').textContent = n1
-    document.getElementById('m-p2name').textContent = n2
-    renderHP(1); renderHP(2)
-    renderDots(1); renderDots(2)
-    document.getElementById('match').classList.add('active')
-  } else {
-    renderDashboard()
-    document.getElementById('dashboard').classList.add('active')
-  }
-}
-
-// ══════════════════════════════════════════════
-// HP LOGIKA
-// ══════════════════════════════════════════════
-function changeHP(n, d) {
-  if (n === 1) state.p1hp = Math.max(-99, state.p1hp + d)
-  else state.p2hp = Math.max(-99, state.p2hp + d)
-  renderHP(n)
-}
-
-function renderHP(n) {
-  const hp = n === 1 ? state.p1hp : state.p2hp
-  const isLow = hp <= 5
-  const colNorm = n === 1 ? 'var(--green-t)' : 'var(--red-t)'
-  const col = isLow ? 'var(--danger)' : colNorm
-
-  // Mobile
-  const mob = document.getElementById(`m-p${n}hp`)
-  if (mob) { mob.textContent = hp; mob.style.color = col }
-  // PC
-  const pc = document.getElementById(`d-p${n}hp`)
-  if (pc) { pc.textContent = hp; pc.style.color = col }
-}
-
-// ══════════════════════════════════════════════
-// WIN DOTS
-// ══════════════════════════════════════════════
-function renderDots(n) {
-  const wins = n === 1 ? state.p1wins : state.p2wins
-  const col = n === 1 ? 'var(--green)' : 'var(--red)'
-
-  function dotsHTML() {
-    return [1,2].map(i =>
-      `<span class="win-dot" style="border-color:${col};background:${wins>=i?col:'transparent'};"></span>`
-    ).join('')
-  }
-
-  const mob = document.getElementById(`m-p${n}dots`)
-  if (mob) mob.innerHTML = dotsHTML()
-  const pc = document.getElementById(`d-p${n}dots`)
-  if (pc) pc.innerHTML = dotsHTML()
-}
-
-// ══════════════════════════════════════════════
-// WINNER
-// ══════════════════════════════════════════════
-function showWinner() {
-  const n1 = state.p1?.name ?? 'Hráč 1'
-  const n2 = state.p2?.name ?? 'Hráč 2'
-  document.getElementById('wbtn1').textContent = n1
-  document.getElementById('wbtn2').textContent = n2
-  document.getElementById('winner-overlay').classList.add('active')
-}
-
-function hideWinner() {
-  document.getElementById('winner-overlay').classList.remove('active')
-}
-
-function declareWinner(w) {
-  if (w === 1) state.p1wins++
-  else state.p2wins++
-  state.p1hp = 20; state.p2hp = 20
-  hideWinner()
-  renderHP(1); renderHP(2)
-  renderDots(1); renderDots(2)
-  if (state.mode === 'pc') renderDashboard()
-}
-
-// ══════════════════════════════════════════════
-// PC DASHBOARD
-// ══════════════════════════════════════════════
-function renderDashboard() {
-  const p1 = state.p1, p2 = state.p2
-  const n1 = p1?.name ?? 'Hráč 1'
-  const n2 = p2?.name ?? 'Hráč 2'
-
-  document.getElementById('d-p1lbl').textContent = n1.toUpperCase()
-  document.getElementById('d-p2lbl').textContent = n2.toUpperCase()
-  renderHP(1); renderHP(2)
-  renderDots(1); renderDots(2)
-
-  function playerCard(p, nil, color, textColor) {
-    if (nil || !p) return `<p style="font-size:.875rem;color:var(--muted);">Hráč není v žebříčku</p>`
-    return `
-      <p style="font-size:1.05rem;font-weight:600;color:${textColor};margin-bottom:.625rem;">${p.name}</p>
-      ${statRow('Pořadí', `#${p.rank}`, textColor)}
-      ${statRow('ELO', p.elo, textColor)}
-      ${statRow('Počet her', p.games, textColor)}
-      ${statRow('Výhry', p.wins, textColor)}
-      ${statRow('Prohry', p.losses, textColor)}
-      ${statRow('Remízy', p.draws, textColor)}
-      ${statRow('Winrate', p.winrate.toFixed(1)+'%', textColor)}
-      ${statRow('Peak ELO', p.peakElo, textColor)}
-    `
-  }
-
-  document.getElementById('d-p1card').innerHTML =
-    `<p class="lbl" style="color:var(--green-t);margin-bottom:.625rem;">HRÁČ 1</p>` +
-    playerCard(p1, state.p1nil, 'var(--green-bg)', 'var(--green-t)')
-  document.getElementById('d-p2card').innerHTML =
-    `<p class="lbl" style="color:var(--red-t);margin-bottom:.625rem;">HRÁČ 2</p>` +
-    playerCard(p2, state.p2nil, 'var(--red-bg)', 'var(--red-t)')
-
-  // Porovnání jen pokud oba v seznamu
-  const compare = document.getElementById('d-compare')
-  const bars = document.getElementById('d-bars')
-  if (p1 && p2 && !state.p1nil && !state.p2nil) {
-    compare.style.display = 'block'
-    bars.innerHTML = [
-      {label:'ELO', v1:p1.elo, v2:p2.elo, max:maxStats.elo},
-      {label:'Počet her', v1:p1.games, v2:p2.games, max:maxStats.games},
-      {label:'Výhry', v1:p1.wins, v2:p2.wins, max:maxStats.wins},
-      {label:'Winrate %', v1:+p1.winrate.toFixed(1), v2:+p2.winrate.toFixed(1), max:100},
-      {label:'Peak ELO', v1:p1.peakElo, v2:p2.peakElo, max:maxStats.peakElo},
-    ].map(b => compareBar(b.label, b.v1, b.v2, b.max)).join('')
-  } else {
-    compare.style.display = 'none'
+async function declWin(w){
+  if(w===1)S.p1w++;else S.p2w++;
+  S.p1hp=20;S.p2hp=20
+  hideOv('ov-win');mRHP(1);mRHP(2);mRDots(1);mRDots(2)
+  await dbPatch(`rooms/${S.code}`,{p1hp:20,p2hp:20,p1w:S.p1w,p2w:S.p2w})
+  if(S.p1w>=2||S.p2w>=2){
+    const wName=S.p1w>=2?(S.p1?.name||S.room?.p1?.name||'Hráč 1'):(S.p2?.name||S.room?.p2?.name||'Hráč 2')
+    const wCol=S.p1w>=2?'var(--gt)':'var(--rt)'
+    el('match-win-nm').textContent=wName;el('match-win-nm').style.color=wCol
+    await dbPatch(`rooms/${S.code}`,{status:'match-over'})
+    showOv('ov-match')
   }
 }
 
-function statRow(label, value, color) {
-  return `<div class="stat-row"><span style="color:var(--muted);">${label}</span><span style="color:${color};font-weight:500;">${value}</span></div>`
+async function resetToSel(){
+  hideOv('ov-match');S.p1w=0;S.p2w=0;S.p1hp=20;S.p2hp=20;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false
+  rPicker(1);rPicker(2);el('start-btn').disabled=true
+  await dbPatch(`rooms/${S.code}`,{p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'selecting'})
+  showScr('mob-sel')
 }
 
-function compareBar(label, v1, v2, max) {
-  const w1 = max > 0 ? Math.min(v1/max*100,100) : 0
-  const w2 = max > 0 ? Math.min(v2/max*100,100) : 0
-  const fmt = v => v % 1 !== 0 ? v.toFixed(1) : v
-  return `
-    <div class="cbar-wrap">
-      <div class="cbar-labels">
-        <span style="color:var(--green-t);font-weight:500;">${fmt(v1)}</span>
-        <span class="lbl" style="font-size:.6rem;">${label}</span>
-        <span style="color:var(--red-t);font-weight:500;">${fmt(v2)}</span>
-      </div>
-      <div class="cbar-track">
-        <div class="cbar-half" style="display:flex;justify-content:flex-end;">
-          <div style="width:${w1}%;background:var(--green);border-radius:3px 0 0 3px;transition:width .4s;"></div>
-        </div>
-        <div style="width:2px;background:var(--border-md);flex-shrink:0;"></div>
-        <div class="cbar-half">
-          <div style="width:${w2}%;background:var(--red);border-radius:0 3px 3px 0;transition:width .4s;"></div>
-        </div>
-      </div>
-    </div>`
-}
-
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
+// ── INIT ───────────────────────────────────────────
 loadPlayers()
 </script>
 </body>
