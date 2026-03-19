@@ -92,24 +92,22 @@ input{font-family:inherit;}
 .pc-stat-lbl{color:var(--tm);}
 .pcard.right .pc-stat{flex-direction:row-reverse;}
 
-/* Compare – full 7-bar symmetric diverging chart */
 .cmp-card{
   background:rgba(24,29,42,.5);backdrop-filter:blur(10px);
   border:1px solid var(--b);border-radius:var(--rrl);
-  padding:.75rem 1.25rem .8rem;
-  flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:.45rem .9rem .5rem;flex-shrink:0;
 }
-.cmp-title{font-size:1rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tx);text-align:center;margin-bottom:.75rem;flex-shrink:0;}
-.cmp-bars{display:flex;flex-direction:column;gap:.3rem;flex:1;justify-content:space-evenly;}
-.cbar{display:grid;grid-template-columns:5.5ch 1fr 2px 1fr 5.5ch;align-items:center;gap:.375rem;}
-.cbar-v1{font-size:1rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;}
-.cbar-l{height:9px;background:rgba(23,168,112,.08);border-radius:4px 0 0 4px;overflow:hidden;display:flex;justify-content:flex-end;}
-.cbar-l-fill{height:100%;background:var(--g);border-radius:4px 0 0 4px;transition:width .4s;}
-.cbar-mid{background:var(--bm);height:14px;flex-shrink:0;}
-.cbar-r{height:9px;background:rgba(217,82,40,.08);border-radius:0 4px 4px 0;overflow:hidden;}
-.cbar-r-fill{height:100%;background:var(--r);border-radius:0 4px 4px 0;transition:width .4s;}
-.cbar-v2{font-size:1rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;}
-.cbar-lbl{display:none;}
+.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.45rem;}
+.cmp-bars{display:flex;flex-direction:column;gap:.18rem;}
+.cbar{display:grid;grid-template-columns:5ch 1fr auto 1fr 5ch;align-items:center;gap:.25rem;}
+.cbar-v1{font-size:.85rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;}
+.cbar-l{height:6px;background:rgba(23,168,112,.08);border-radius:3px 0 0 3px;overflow:hidden;display:flex;justify-content:flex-end;}
+.cbar-l-fill{height:100%;background:var(--g);border-radius:3px 0 0 3px;transition:width .4s;}
+.cbar-lbl{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;padding:0 .2rem;}
+.cbar-r{height:6px;background:rgba(217,82,40,.08);border-radius:0 3px 3px 0;overflow:hidden;}
+.cbar-r-fill{height:100%;background:var(--r);border-radius:0 3px 3px 0;transition:width .4s;}
+.cbar-v2{font-size:.85rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;}
+.cbar-mid{display:none;}
 
 /* Win overlay on PC dashboard */
 .pc-win-overlay{
@@ -150,57 +148,71 @@ input{font-family:inherit;}
 .primary-btn{padding:12px 2.5rem;background:var(--yl);border:1px solid var(--yb);color:var(--y);border-radius:var(--rr);font-size:1rem;font-weight:700;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
-/* MOBILE MATCH
-   Phone lies flat on table between two players.
-   Player A at bottom reads normally.
-   Player B at top reads rotated 180deg.
-   Layout per half (from player perspective): buttons(outer) | HP | name+dots(inner/center)
+/* MOBILE MATCH – LANDSCAPE
+   Phone is landscape. Left half = Player A (reads left→right normally).
+   Right half = Player B (rotated 180° so they read from the right side).
+   Each player: [name+dots at center edge] [big HP] [buttons at outer edge]
+   DOHRÁNO is fixed in the center, works in fullscreen too.
 */
-#mob-match{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg);z-index:1;overflow:hidden;}
+#mob-match{
+  position:fixed;inset:0;display:none;flex-direction:row;
+  background:var(--bg);z-index:1;overflow:hidden;
+}
 #mob-match.on{display:flex;}
 
-.m-half{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-/* Player A bottom: name+dots at top of their section (toward center), buttons at bottom */
+/* Halves side by side */
+.m-half{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* Player A – left side, normal: namerow at top (center), hp, btns at bottom (outer) */
 .m-half.pa{flex-direction:column;}
-/* Player B top: rotate whole half so they read from their side */
+
+/* Player B – right side, rotated: column-reverse so outer edge stays at right */
 .m-half.pb{flex-direction:column;transform:rotate(180deg);}
 
-.m-mid-row{height:1px;background:var(--bm);flex-shrink:0;position:relative;}
+/* Vertical divider */
+.m-mid-row{width:1px;background:var(--bm);flex-shrink:0;position:relative;}
+
+/* DOHRÁNO: fixed center, always on top even in fullscreen */
 .mob-done{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;
-  padding:clamp(7px,1.2vh,12px) clamp(16px,3vw,28px);
-  font-size:clamp(.65rem,1.3vw,.85rem);font-weight:700;letter-spacing:.16em;
-  background:rgba(18,22,31,.92);backdrop-filter:blur(6px);
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
+  padding:clamp(7px,1.5vh,14px) clamp(18px,2.5vw,30px);
+  font-size:clamp(.7rem,1.4vw,.9rem);font-weight:700;letter-spacing:.16em;
+  background:rgba(18,22,31,.94);backdrop-filter:blur(8px);
   border:1px solid var(--bh);border-radius:var(--rrl);
   color:var(--tx);white-space:nowrap;
 }
 
-/* Within each half – from player's perspective (after transform): */
+/* Within each half */
 .m-namerow{
   display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
-  padding:clamp(6px,1.2vh,14px) 1rem clamp(4px,.8vh,8px);
+  padding:clamp(8px,2vh,20px) 1rem clamp(4px,1vh,10px);
   flex-shrink:0;
 }
-.m-name{font-size:clamp(.6rem,1.5vw,.9rem);letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
+.m-name{font-size:clamp(.6rem,1.2vh,.85rem);letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
 .m-dots{display:flex;gap:5px;}
-.m-wdot{width:clamp(9px,1.5vw,13px);height:clamp(9px,1.5vw,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+.m-wdot{width:clamp(9px,1.4vh,13px);height:clamp(9px,1.4vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
 .m-hp-wrap{flex:1;display:flex;align-items:center;justify-content:center;}
-.m-hp{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,18vw,9rem);line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
+.m-hp{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,22vh,10rem);
+  line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;
+}
 .m-btnrow{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(5px,1.5vw,12px);
-  padding:clamp(6px,1.2vh,14px) 1rem;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;
+  gap:clamp(5px,1vw,10px);
+  padding:clamp(8px,2vh,20px) 1rem;
   flex-shrink:0;
 }
 .m-btn{
-  width:clamp(48px,11vw,72px);height:clamp(44px,10vw,66px);
+  width:clamp(44px,7vh,68px);height:clamp(44px,7vh,68px);
   border-radius:var(--rrs);font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(.95rem,2.5vw,1.4rem);border-width:1px;border-style:solid;
+  font-size:clamp(.9rem,2.2vh,1.3rem);border-width:1px;border-style:solid;
   display:flex;align-items:center;justify-content:center;
 }
 .mob-fs{
-  position:fixed;bottom:12px;right:12px;z-index:50;
-  width:34px;height:34px;background:rgba(18,22,31,.88);border:1px solid var(--bh);
-  border-radius:var(--rrs);color:var(--tx);font-size:14px;
+  position:fixed;bottom:10px;right:10px;z-index:300;
+  width:32px;height:32px;background:rgba(18,22,31,.88);border:1px solid var(--bh);
+  border-radius:var(--rrs);color:var(--tx);font-size:13px;
   display:flex;align-items:center;justify-content:center;
 }
 
@@ -360,29 +372,7 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player B: top half, rotated so B reads from their side -->
-  <div class="m-half pb">
-    <div class="m-namerow">
-      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
-      <div class="m-dots" id="m-d2"></div>
-    </div>
-    <div class="m-hp-wrap">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-    </div>
-    <div class="m-btnrow">
-      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
-    </div>
-  </div>
-
-  <!-- Divider + DOHRANO button -->
-  <div class="m-mid-row">
-    <button class="mob-done" onclick="showOv('ov-win')">DOHR&Aacute;NO</button>
-  </div>
-
-  <!-- Player A: bottom half, normal orientation -->
+  <!-- Player A: LEFT side, normal orientation (reads left to right) -->
   <div class="m-half pa">
     <div class="m-namerow">
       <p class="m-name" id="m-na" style="color:var(--gt);"></p>
@@ -399,6 +389,28 @@ input{font-family:inherit;}
     </div>
   </div>
 
+  <!-- Vertical divider -->
+  <div class="m-mid-row"></div>
+
+  <!-- Player B: RIGHT side, rotated 180° so B reads from the right -->
+  <div class="m-half pb">
+    <div class="m-namerow">
+      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
+      <div class="m-dots" id="m-d2"></div>
+    </div>
+    <div class="m-hp-wrap">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+    </div>
+    <div class="m-btnrow">
+      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+  </div>
+
+  <!-- DOHRÁNO: fixed center, works in fullscreen -->
+  <button class="mob-done" onclick="showOv('ov-win')">DOHR&Aacute;NO</button>
   <button class="mob-fs" onclick="toggleFS()" id="fs-btn">&#x26F6;</button>
 </div>
 
@@ -626,7 +638,7 @@ function cBarHTML(lbl,v1,v2,mx){
   return`<div class="cbar">
     <span class="cbar-v1">${f(v1)}</span>
     <div class="cbar-l"><div class="cbar-l-fill" style="width:${w1}%;"></div></div>
-    <div class="cbar-mid"></div>
+    <span class="cbar-lbl">${lbl}</span>
     <div class="cbar-r"><div class="cbar-r-fill" style="width:${w2}%;"></div></div>
     <span class="cbar-v2">${f(v2)}</span>
   </div>`
