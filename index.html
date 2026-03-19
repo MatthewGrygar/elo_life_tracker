@@ -117,9 +117,24 @@ input{font-family:inherit;}
 .cbar-r-fill{height:100%;background:var(--r);transition:width .4s ease;}
 
 /* ══ MOBILE CODE / SELECT ════════════════════════ */
-#mob-code{min-height:100dvh;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;text-align:center;}
-#mob-code input{width:210px;text-align:center;font-size:2.5rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.4em;padding:.625rem .5rem;background:var(--card);border:1px solid var(--bm);border-radius:var(--rr);color:var(--y);outline:none;}
-#mob-code input:focus{border-color:var(--yb);}
+#mob-code{height:100dvh;align-items:center;justify-content:center;gap:1.25rem;padding:2rem;text-align:center;}
+#mob-code-inp{
+  width:220px;text-align:center;
+  font-size:3rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.45em;padding-left:.45em;
+  padding-top:.75rem;padding-bottom:.75rem;
+  background:rgba(24,29,42,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--bm);border-radius:var(--rrl);
+  color:var(--y);outline:none;display:block;
+}
+#mob-code-inp:focus{border-color:var(--yb);box-shadow:0 0 0 2px rgba(196,149,61,.15);}
+#mob-ok-btn{
+  width:220px;padding:1rem;
+  font-size:1rem;font-weight:700;letter-spacing:.12em;
+  background:var(--yl);border:1px solid var(--yb);border-radius:var(--rrl);
+  color:var(--y);transition:all .15s;
+}
+#mob-ok-btn:not(:disabled):hover{background:rgba(196,149,61,.25);}
+#mob-ok-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 #mob-sel{min-height:100dvh;overflow:hidden;}
 .sel-head{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .sel-body{flex:1;display:flex;overflow:hidden;}
@@ -311,18 +326,12 @@ input{font-family:inherit;}
 
 <!-- ████ MOBILE CODE ██████████████████████████████ -->
 <div id="mob-code" class="scr">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:1.5rem;padding:2rem;text-align:center;">
-    <div>
-      <p class="lbl" style="margin-bottom:.5rem;">MOBIL</p>
-      <h2 style="font-size:1.5rem;font-weight:600;">Zadej kód místnosti</h2>
-    </div>
-    <input id="mob-inp" type="tel" inputmode="numeric" maxlength="5" placeholder="12345"
-      oninput="this.value=this.value.replace(/\D/g,'');chkJoin()"
-      onkeydown="if(event.key==='Enter')joinRoom()"/>
-    <div id="mob-err" class="err-msg" style="display:none;"></div>
-    <button class="primary-btn" id="join-btn" onclick="joinRoom()" disabled>Připojit</button>
-    <button class="back" onclick="cleanupHome()">← Zpět</button>
-  </div>
+  <input id="mob-code-inp" type="tel" inputmode="numeric" maxlength="5" placeholder="·····"
+    oninput="this.value=this.value.replace(/\D/g,'');chkJoin();if(this.value.length===5)joinRoom()"
+    onkeydown="if(event.key==='Enter')joinRoom()"
+    autocomplete="off"/>
+  <div id="mob-err" class="err-msg" style="display:none;max-width:220px;text-align:center;"></div>
+  <button id="mob-ok-btn" onclick="joinRoom()" disabled>OK</button>
 </div>
 
 <!-- ████ MOBILE SELECT ████████████████████████████ -->
@@ -360,7 +369,6 @@ input{font-family:inherit;}
     </div>
   </div>
   <div class="sel-foot">
-    <button class="back" onclick="cleanupHome()">← Zpět</button>
     <button class="primary-btn" id="start-btn" onclick="startMatch()" disabled>▶ Hrát</button>
   </div>
 </div>
@@ -576,7 +584,14 @@ function cleanupHome(){
   if(S.es){S.es.close();S.es=null}
   Object.assign(S,{room:null,p1:null,p2:null,p1nil:false,p2nil:false,p1hp:20,p2hp:20,p1w:0,p2w:0,pendingWinner:0})
   hideOv('ov-win');hideOv('ov-gwin');hideOv('ov-match')
+  // Show PC screens again if they were hidden
+  ;['pc-wait','pc-dash'].forEach(id=>{const e=el(id);if(e)e.style.visibility=''})
   showScr('home')
+}
+
+function enterMobileMode(){
+  // Hide PC screens from tab-order / visibility so they can't be accidentally seen
+  ;['pc-wait','pc-dash'].forEach(id=>{const e=el(id);if(e)e.style.visibility='hidden'})
 }
 
 function toggleFS(){
@@ -652,20 +667,44 @@ function cBarHTML(lbl,v1,v2,mx){
 }
 
 // ── MOBILE FLOW ───────────────────────────────────────
-function goMobile(){S.mode='mobile';el('mob-inp').value='';hide('mob-err');el('join-btn').disabled=true;showScr('mob-code')}
-function chkJoin(){el('join-btn').disabled=el('mob-inp').value.length!==5}
+function goMobile(){
+  S.mode='mobile'
+  enterMobileMode()
+  el('mob-code-inp').value=''
+  hide('mob-err')
+  el('mob-ok-btn').disabled=true
+  el('mob-ok-btn').textContent='OK'
+  showScr('mob-code')
+  setTimeout(()=>el('mob-code-inp').focus(),120)
+}
+function chkJoin(){el('mob-ok-btn').disabled=el('mob-code-inp').value.length!==5}
 async function joinRoom(){
-  const code=el('mob-inp').value.trim();if(code.length!==5)return
-  hide('mob-err');el('join-btn').textContent='Připojuji…';el('join-btn').disabled=true
+  const code=el('mob-code-inp').value.trim()
+  if(code.length!==5)return
+  hide('mob-err')
+  el('mob-ok-btn').textContent='…'
+  el('mob-ok-btn').disabled=true
   try{
     const room=await dbGet(`rooms/${code}`)
-    if(!room){el('mob-err').textContent='Místnost nenalezena.';show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false;return}
+    if(!room){
+      el('mob-err').textContent='Místnost nenalezena. Zkontroluj kód.'
+      show('mob-err')
+      el('mob-ok-btn').textContent='OK'
+      el('mob-ok-btn').disabled=false
+      return
+    }
     S.code=code;S.room=room
     await dbPatch(`rooms/${code}`,{mobOK:true,status:'selecting'})
     rPicker(1);rPicker(2);el('start-btn').disabled=true
     setText('sel-status',players.length?`● ${players.length} hráčů`:'○','var(--gt)')
-    showScr('mob-sel');el('join-btn').textContent='Připojit'
-  }catch(e){el('mob-err').textContent='Chyba: '+e.message;show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false}
+    showScr('mob-sel')
+    el('mob-ok-btn').textContent='OK'
+  }catch(e){
+    el('mob-err').textContent='Chyba: '+e.message
+    show('mob-err')
+    el('mob-ok-btn').textContent='OK'
+    el('mob-ok-btn').disabled=false
+  }
 }
 
 // ── PICKER ────────────────────────────────────────────
