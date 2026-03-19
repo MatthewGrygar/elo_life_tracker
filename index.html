@@ -95,26 +95,35 @@ input{font-family:inherit;}
 .cmp-card{
   background:rgba(24,29,42,.5);backdrop-filter:blur(10px);
   border:1px solid var(--b);border-radius:var(--rrl);
-  padding:.5rem 1rem .55rem;flex-shrink:0;
+  padding:.5rem 1rem .55rem;
+  flex:1;min-height:0;display:flex;flex-direction:column;
 }
-.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.5rem;}
-.cmp-bars{display:flex;flex-direction:column;gap:0;}
-/* Row: value | bar-left | label (center) | bar-right | value */
+.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.4rem;flex-shrink:0;}
+.cmp-bars{display:flex;flex-direction:column;justify-content:center;gap:0;flex:1;}
 .cbar{
   display:grid;
-  grid-template-columns:5ch 1fr 7ch 1fr 5ch;
-  align-items:center;gap:.3rem;
-  padding:.22rem 0;
+  grid-template-columns:5.5ch 1fr 7ch 1fr 5.5ch;
+  align-items:center;gap:.35rem;
+  padding:.28rem 0;
   border-bottom:1px solid rgba(255,255,255,.04);
 }
 .cbar:last-child{border-bottom:none;}
-.cbar-v1{font-size:.88rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;line-height:1;}
-.cbar-l{height:5px;background:rgba(23,168,112,.07);border-radius:3px 0 0 3px;overflow:hidden;display:flex;justify-content:flex-end;}
-.cbar-l-fill{height:100%;background:var(--g);border-radius:3px 0 0 3px;transition:width .4s;}
-.cbar-lbl{font-size:.54rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;}
-.cbar-r{height:5px;background:rgba(217,82,40,.07);border-radius:0 3px 3px 0;overflow:hidden;}
-.cbar-r-fill{height:100%;background:var(--r);border-radius:0 3px 3px 0;transition:width .4s;}
-.cbar-v2{font-size:.88rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;line-height:1;}
+.cbar-v1{font-size:.9rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;line-height:1;}
+.cbar-l{
+  height:6px;
+  background:rgba(23,168,112,.12);
+  border-radius:3px 0 0 3px;overflow:hidden;
+  display:flex;justify-content:flex-end;
+}
+.cbar-l-fill{height:100%;background:var(--g);border-radius:3px 0 0 3px;transition:width .5s ease;min-width:2px;}
+.cbar-lbl{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;}
+.cbar-r{
+  height:6px;
+  background:rgba(217,82,40,.12);
+  border-radius:0 3px 3px 0;overflow:hidden;
+}
+.cbar-r-fill{height:100%;background:var(--r);border-radius:0 3px 3px 0;transition:width .5s ease;min-width:2px;}
+.cbar-v2{font-size:.9rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;line-height:1;}
 .cbar-mid{display:none;}
 
 /* Win overlay on PC dashboard */
@@ -157,10 +166,13 @@ input{font-family:inherit;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
 /* MOBILE MATCH – LANDSCAPE
-   Phone lies landscape on the table.
-   Player A sees the top edge of the phone → content rotated -90° (left half)
-   Player B sees the bottom edge → content rotated +90° (right half)
-   Each inner panel uses absolute positioning + rotation to fill its half.
+   Phone is landscape on the table.
+   Player A (green, left half): buttons on LEFT of screen, HP in middle, name+dots toward center.
+   Player B (red, right half): mirror of A, content rotated 180° so B reads from right edge.
+
+   Within each half the layout is a ROW:
+     A: [btn-col] [HP] [name+dots]   (left→right)
+     B: rotated 180° so from B's perspective same order, but on screen it appears reversed
 */
 #mob-match{
   position:fixed;inset:0;display:none;flex-direction:row;
@@ -168,72 +180,77 @@ input{font-family:inherit;}
 }
 #mob-match.on{display:flex;}
 
-/* Each half is a positioned container */
-.m-half{flex:1;position:relative;overflow:hidden;min-width:0;}
+.m-half{flex:1;display:flex;flex-direction:row;align-items:stretch;overflow:hidden;min-width:0;}
 
-/* The inner panel: absolute, fills container, then rotated */
-.m-inner-panel{
-  position:absolute;
-  /* Rotate -90°: top→left, bottom→right. Dimensions swap. */
-  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-}
-/* Player A (left half): -90° → their "up" faces the phone's top edge */
-.m-half.pa .m-inner-panel{
-  top:50%;left:50%;
-  width:100vh;height:50vw;
-  transform:translate(-50%,-50%) rotate(-90deg);
-}
-/* Player B (right half): +90° → their "up" faces the phone's bottom edge */
-.m-half.pb .m-inner-panel{
-  top:50%;left:50%;
-  width:100vh;height:50vw;
-  transform:translate(-50%,-50%) rotate(90deg);
-}
+/* Player B: rotate the whole half 180° so they read from the right/bottom edge */
+.m-half.pb{transform:rotate(180deg);}
 
 /* Vertical divider */
-.m-mid-row{width:1px;background:var(--bm);flex-shrink:0;position:relative;}
+.m-mid-row{width:1px;background:var(--bm);flex-shrink:0;}
 
-/* DOHRÁNO: fixed center, z-index above everything including fullscreen */
-.mob-done{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
-  padding:8px 20px;
-  font-size:.75rem;font-weight:700;letter-spacing:.16em;
-  background:rgba(18,22,31,.95);backdrop-filter:blur(8px);
-  border:1.5px solid var(--bh);border-radius:var(--rrl);
-  color:var(--tx);white-space:nowrap;
-}
-
-/* Inner panel sections */
-.m-namerow{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;
-  padding:clamp(6px,1.5vw,14px) 0 0;flex-shrink:0;
-}
-.m-name{font-size:clamp(.55rem,1.2vw,.8rem);letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
-.m-dots{display:flex;gap:5px;}
-.m-wdot{width:clamp(9px,1.2vw,13px);height:clamp(9px,1.2vw,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
-.m-hp-wrap{flex:1;display:flex;align-items:center;justify-content:center;}
-.m-hp{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(4rem,14vw,9rem);
-  line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;
-}
-.m-btnrow{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;
-  gap:clamp(5px,1vw,10px);
-  padding:0 0 clamp(6px,1.5vw,14px);flex-shrink:0;
+/* Button column – LEFT side of each half */
+.m-btncol{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(5px,1.5vh,12px);
+  padding:clamp(8px,2vw,18px);
+  flex-shrink:0;
 }
 .m-btn{
-  width:clamp(46px,6vw,66px);height:clamp(44px,5.5vw,62px);
+  width:clamp(44px,7vh,66px);height:clamp(44px,7vh,66px);
   border-radius:var(--rrs);font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(.9rem,1.6vw,1.25rem);border-width:1px;border-style:solid;
+  font-size:clamp(.85rem,2vh,1.25rem);border-width:1px;border-style:solid;
   display:flex;align-items:center;justify-content:center;
 }
+
+/* Center area: HP big + name/dots column */
+.m-center{flex:1;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(8px,2vw,20px);padding:clamp(8px,2vw,16px);}
+
+.m-hp{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,20vh,11rem);
+  line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;flex-shrink:0;
+}
+
+/* Name + dots stacked, toward center divider */
+.m-namerow{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(6px,1.5vh,12px);
+}
+.m-name{
+  writing-mode:vertical-rl;
+  font-size:clamp(.55rem,1.3vh,.8rem);
+  letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;
+}
+/* A: name reads bottom→top (rotated text so player reads it from left) */
+.m-half.pa .m-name{transform:rotate(180deg);}
+/* B: name reads top→bottom (already rotated 180° by parent) */
+.m-half.pb .m-name{transform:none;}
+
+.m-dots{display:flex;flex-direction:column;gap:5px;}
+.m-wdot{width:clamp(9px,1.5vh,13px);height:clamp(9px,1.5vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+
+/* DOHRÁNO: absolute inside #mob-match (works in fullscreen element) */
+.mob-done{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
+  padding:9px 22px;
+  font-size:.78rem;font-weight:700;letter-spacing:.16em;
+  background:rgba(18,22,31,.96);backdrop-filter:blur(8px);
+  border:1.5px solid var(--bh);border-radius:var(--rrl);
+  color:var(--tx);white-space:nowrap;pointer-events:auto;
+}
 .mob-fs{
-  position:fixed;bottom:10px;right:10px;z-index:300;
+  position:absolute;bottom:10px;right:10px;z-index:201;
   width:32px;height:32px;background:rgba(18,22,31,.88);border:1px solid var(--bh);
   border-radius:var(--rrs);color:var(--tx);font-size:13px;
   display:flex;align-items:center;justify-content:center;
 }
+
+/* Overlay INSIDE mob-match for fullscreen compatibility */
+.m-overlay{
+  display:none;position:absolute;inset:0;background:rgba(10,13,20,.93);z-index:300;
+  flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+}
+.m-overlay.on{display:flex;}
 
 /* OVERLAYS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,13,20,.93);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
@@ -391,21 +408,19 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player A: left half, content rotated -90° (faces phone top edge) -->
+  <!-- Player A: GREEN, left half. Layout: [btn-col | HP | name+dots] -->
   <div class="m-half pa">
-    <div class="m-inner-panel">
+    <div class="m-btncol">
+      <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+      <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+      <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+      <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+    <div class="m-center">
+      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
       <div class="m-namerow">
         <p class="m-name" id="m-na" style="color:var(--gt);"></p>
         <div class="m-dots" id="m-d1"></div>
-      </div>
-      <div class="m-hp-wrap">
-        <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
-      </div>
-      <div class="m-btnrow">
-        <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-        <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-        <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-        <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
       </div>
     </div>
   </div>
@@ -413,28 +428,37 @@ input{font-family:inherit;}
   <!-- Vertical divider -->
   <div class="m-mid-row"></div>
 
-  <!-- Player B: right half, content rotated +90° (faces phone bottom edge) -->
+  <!-- Player B: RED, right half. Rotated 180° so B reads from right edge.
+       Layout inside (before rotation): [btn-col | HP | name+dots]
+       After 180° rotation, on screen: [name+dots | HP | btn-col] – B sees it correctly -->
   <div class="m-half pb">
-    <div class="m-inner-panel">
+    <div class="m-btncol">
+      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+    <div class="m-center">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
       <div class="m-namerow">
         <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
         <div class="m-dots" id="m-d2"></div>
       </div>
-      <div class="m-hp-wrap">
-        <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-      </div>
-      <div class="m-btnrow">
-        <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-        <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-        <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-        <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
-      </div>
     </div>
   </div>
 
-  <!-- DOHRÁNO fixed at center -->
-  <button class="mob-done" onclick="showOv('ov-win')">DOHR&Aacute;NO</button>
+  <button class="mob-done" onclick="mDohrano()">DOHR&Aacute;NO</button>
   <button class="mob-fs" onclick="toggleFS()" id="fs-btn">&#x26F6;</button>
+
+  <!-- Winner overlay INSIDE mob-match so it works in fullscreen -->
+  <div id="m-ov-win" class="m-overlay">
+    <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);">KDO VYHR&Aacute;L HRU?</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+      <button class="ov-btn" id="m-wb1" onclick="declWin(1)" style="background:var(--gl);border-color:var(--gb);color:var(--gt);"></button>
+      <button class="ov-btn" id="m-wb2" onclick="declWin(2)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);"></button>
+    </div>
+    <button style="background:none;border:none;font-size:.8rem;color:var(--tm);cursor:pointer;" onclick="hideMOv()">Zru&#x161;it</button>
+  </div>
 </div>
 
 <!-- OVERLAY: kdo vyhral hru -->
@@ -720,7 +744,7 @@ async function startMatch(){
   const rp1=toRP(S.p1,S.p1nil,'Hráč 1'),rp2=toRP(S.p2,S.p2nil,'Hráč 2')
   await dbPatch(`rooms/${S.code}`,{p1:rp1,p2:rp2,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'playing'})
   el('m-na').textContent=rp1.name;el('m-nb').textContent=rp2.name
-  el('wb1').textContent=rp1.name;el('wb2').textContent=rp2.name
+  el('m-wb1').textContent=rp1.name;el('m-wb2').textContent=rp2.name
   mRHP(1);mRHP(2);mRDots(1);mRDots(2);showScr('mob-match')
 }
 function mRHP(n){
@@ -739,7 +763,7 @@ async function chHP(n,d){
 
 async function declWin(w){
   if(w===1)S.p1w++;else S.p2w++;
-  S.p1hp=20;S.p2hp=20;hideOv('ov-win')
+  S.p1hp=20;S.p2hp=20;hideOv('ov-win');hideMOv()
   await dbPatch(`rooms/${S.code}`,{p1hp:20,p2hp:20,p1w:S.p1w,p2w:S.p2w})
   S.pw=w
   const winP=w===1?(S.p1||S.room?.p1):(S.p2||S.room?.p2)
@@ -769,6 +793,13 @@ async function resetToSel(){
   await dbPatch(`rooms/${S.code}`,{p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'selecting'})
   showScr('mob-sel')
 }
+
+function mDohrano(){
+  el('m-wb1').textContent=el('m-na').textContent||'Hráč 1'
+  el('m-wb2').textContent=el('m-nb').textContent||'Hráč 2'
+  el('m-ov-win').classList.add('on')
+}
+function hideMOv(){el('m-ov-win').classList.remove('on')}
 
 loadPlayers()
 
