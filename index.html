@@ -95,18 +95,26 @@ input{font-family:inherit;}
 .cmp-card{
   background:rgba(24,29,42,.5);backdrop-filter:blur(10px);
   border:1px solid var(--b);border-radius:var(--rrl);
-  padding:.45rem .9rem .5rem;flex-shrink:0;
+  padding:.5rem 1rem .55rem;flex-shrink:0;
 }
-.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.45rem;}
-.cmp-bars{display:flex;flex-direction:column;gap:.18rem;}
-.cbar{display:grid;grid-template-columns:5ch 1fr auto 1fr 5ch;align-items:center;gap:.25rem;}
-.cbar-v1{font-size:.85rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;}
-.cbar-l{height:6px;background:rgba(23,168,112,.08);border-radius:3px 0 0 3px;overflow:hidden;display:flex;justify-content:flex-end;}
+.cmp-title{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.5rem;}
+.cmp-bars{display:flex;flex-direction:column;gap:0;}
+/* Row: value | bar-left | label (center) | bar-right | value */
+.cbar{
+  display:grid;
+  grid-template-columns:5ch 1fr 7ch 1fr 5ch;
+  align-items:center;gap:.3rem;
+  padding:.22rem 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.cbar:last-child{border-bottom:none;}
+.cbar-v1{font-size:.88rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;line-height:1;}
+.cbar-l{height:5px;background:rgba(23,168,112,.07);border-radius:3px 0 0 3px;overflow:hidden;display:flex;justify-content:flex-end;}
 .cbar-l-fill{height:100%;background:var(--g);border-radius:3px 0 0 3px;transition:width .4s;}
-.cbar-lbl{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;padding:0 .2rem;}
-.cbar-r{height:6px;background:rgba(217,82,40,.08);border-radius:0 3px 3px 0;overflow:hidden;}
+.cbar-lbl{font-size:.54rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;}
+.cbar-r{height:5px;background:rgba(217,82,40,.07);border-radius:0 3px 3px 0;overflow:hidden;}
 .cbar-r-fill{height:100%;background:var(--r);border-radius:0 3px 3px 0;transition:width .4s;}
-.cbar-v2{font-size:.85rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;}
+.cbar-v2{font-size:.88rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;line-height:1;}
 .cbar-mid{display:none;}
 
 /* Win overlay on PC dashboard */
@@ -149,10 +157,10 @@ input{font-family:inherit;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
 /* MOBILE MATCH – LANDSCAPE
-   Phone is landscape. Left half = Player A (reads left→right normally).
-   Right half = Player B (rotated 180° so they read from the right side).
-   Each player: [name+dots at center edge] [big HP] [buttons at outer edge]
-   DOHRÁNO is fixed in the center, works in fullscreen too.
+   Phone lies landscape on the table.
+   Player A sees the top edge of the phone → content rotated -90° (left half)
+   Player B sees the bottom edge → content rotated +90° (right half)
+   Each inner panel uses absolute positioning + rotation to fill its half.
 */
 #mob-match{
   position:fixed;inset:0;display:none;flex-direction:row;
@@ -160,53 +168,64 @@ input{font-family:inherit;}
 }
 #mob-match.on{display:flex;}
 
-/* Halves side by side */
-.m-half{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+/* Each half is a positioned container */
+.m-half{flex:1;position:relative;overflow:hidden;min-width:0;}
 
-/* Player A – left side, normal: namerow at top (center), hp, btns at bottom (outer) */
-.m-half.pa{flex-direction:column;}
-
-/* Player B – right side, rotated: column-reverse so outer edge stays at right */
-.m-half.pb{flex-direction:column;transform:rotate(180deg);}
+/* The inner panel: absolute, fills container, then rotated */
+.m-inner-panel{
+  position:absolute;
+  /* Rotate -90°: top→left, bottom→right. Dimensions swap. */
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+}
+/* Player A (left half): -90° → their "up" faces the phone's top edge */
+.m-half.pa .m-inner-panel{
+  top:50%;left:50%;
+  width:100vh;height:50vw;
+  transform:translate(-50%,-50%) rotate(-90deg);
+}
+/* Player B (right half): +90° → their "up" faces the phone's bottom edge */
+.m-half.pb .m-inner-panel{
+  top:50%;left:50%;
+  width:100vh;height:50vw;
+  transform:translate(-50%,-50%) rotate(90deg);
+}
 
 /* Vertical divider */
 .m-mid-row{width:1px;background:var(--bm);flex-shrink:0;position:relative;}
 
-/* DOHRÁNO: fixed center, always on top even in fullscreen */
+/* DOHRÁNO: fixed center, z-index above everything including fullscreen */
 .mob-done{
   position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
-  padding:clamp(7px,1.5vh,14px) clamp(18px,2.5vw,30px);
-  font-size:clamp(.7rem,1.4vw,.9rem);font-weight:700;letter-spacing:.16em;
-  background:rgba(18,22,31,.94);backdrop-filter:blur(8px);
-  border:1px solid var(--bh);border-radius:var(--rrl);
+  padding:8px 20px;
+  font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  background:rgba(18,22,31,.95);backdrop-filter:blur(8px);
+  border:1.5px solid var(--bh);border-radius:var(--rrl);
   color:var(--tx);white-space:nowrap;
 }
 
-/* Within each half */
+/* Inner panel sections */
 .m-namerow{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
-  padding:clamp(8px,2vh,20px) 1rem clamp(4px,1vh,10px);
-  flex-shrink:0;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;
+  padding:clamp(6px,1.5vw,14px) 0 0;flex-shrink:0;
 }
-.m-name{font-size:clamp(.6rem,1.2vh,.85rem);letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
+.m-name{font-size:clamp(.55rem,1.2vw,.8rem);letter-spacing:.18em;text-transform:uppercase;font-weight:700;white-space:nowrap;}
 .m-dots{display:flex;gap:5px;}
-.m-wdot{width:clamp(9px,1.4vh,13px);height:clamp(9px,1.4vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+.m-wdot{width:clamp(9px,1.2vw,13px);height:clamp(9px,1.2vw,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
 .m-hp-wrap{flex:1;display:flex;align-items:center;justify-content:center;}
 .m-hp{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(4rem,22vh,10rem);
+  font-size:clamp(4rem,14vw,9rem);
   line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;
 }
 .m-btnrow{
   display:flex;flex-direction:row;align-items:center;justify-content:center;
   gap:clamp(5px,1vw,10px);
-  padding:clamp(8px,2vh,20px) 1rem;
-  flex-shrink:0;
+  padding:0 0 clamp(6px,1.5vw,14px);flex-shrink:0;
 }
 .m-btn{
-  width:clamp(44px,7vh,68px);height:clamp(44px,7vh,68px);
+  width:clamp(46px,6vw,66px);height:clamp(44px,5.5vw,62px);
   border-radius:var(--rrs);font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(.9rem,2.2vh,1.3rem);border-width:1px;border-style:solid;
+  font-size:clamp(.9rem,1.6vw,1.25rem);border-width:1px;border-style:solid;
   display:flex;align-items:center;justify-content:center;
 }
 .mob-fs{
@@ -372,44 +391,48 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player A: LEFT side, normal orientation (reads left to right) -->
+  <!-- Player A: left half, content rotated -90° (faces phone top edge) -->
   <div class="m-half pa">
-    <div class="m-namerow">
-      <p class="m-name" id="m-na" style="color:var(--gt);"></p>
-      <div class="m-dots" id="m-d1"></div>
-    </div>
-    <div class="m-hp-wrap">
-      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
-    </div>
-    <div class="m-btnrow">
-      <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-      <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-      <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-      <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    <div class="m-inner-panel">
+      <div class="m-namerow">
+        <p class="m-name" id="m-na" style="color:var(--gt);"></p>
+        <div class="m-dots" id="m-d1"></div>
+      </div>
+      <div class="m-hp-wrap">
+        <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
+      </div>
+      <div class="m-btnrow">
+        <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+        <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+        <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+        <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+      </div>
     </div>
   </div>
 
   <!-- Vertical divider -->
   <div class="m-mid-row"></div>
 
-  <!-- Player B: RIGHT side, rotated 180° so B reads from the right -->
+  <!-- Player B: right half, content rotated +90° (faces phone bottom edge) -->
   <div class="m-half pb">
-    <div class="m-namerow">
-      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
-      <div class="m-dots" id="m-d2"></div>
-    </div>
-    <div class="m-hp-wrap">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-    </div>
-    <div class="m-btnrow">
-      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    <div class="m-inner-panel">
+      <div class="m-namerow">
+        <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
+        <div class="m-dots" id="m-d2"></div>
+      </div>
+      <div class="m-hp-wrap">
+        <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+      </div>
+      <div class="m-btnrow">
+        <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+        <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+        <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+        <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+      </div>
     </div>
   </div>
 
-  <!-- DOHRÁNO: fixed center, works in fullscreen -->
+  <!-- DOHRÁNO fixed at center -->
   <button class="mob-done" onclick="showOv('ov-win')">DOHR&Aacute;NO</button>
   <button class="mob-fs" onclick="toggleFS()" id="fs-btn">&#x26F6;</button>
 </div>
