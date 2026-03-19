@@ -95,35 +95,35 @@ input{font-family:inherit;}
 .cmp-card{
   background:rgba(24,29,42,.5);backdrop-filter:blur(10px);
   border:1px solid var(--b);border-radius:var(--rrl);
-  padding:.4rem .9rem .45rem;
+  padding:.35rem .9rem .4rem;
   flex-shrink:0;
 }
-.cmp-title{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.3rem;}
+.cmp-title{font-size:.52rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.25rem;}
 .cmp-bars{display:flex;flex-direction:column;gap:0;}
 .cbar{
   display:grid;
-  grid-template-columns:5.5ch 1fr 7ch 1fr 5.5ch;
-  align-items:center;gap:.35rem;
-  padding:.28rem 0;
+  grid-template-columns:5.5ch 1fr 6.5ch 1fr 5.5ch;
+  align-items:center;gap:.3rem;
+  padding:.18rem 0;
   border-bottom:1px solid rgba(255,255,255,.04);
 }
 .cbar:last-child{border-bottom:none;}
-.cbar-v1{font-size:.9rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;line-height:1;}
+.cbar-v1{font-size:.82rem;font-weight:800;color:var(--gt);text-align:right;font-variant-numeric:tabular-nums;line-height:1;}
 .cbar-l{
-  height:6px;
+  height:5px;
   background:rgba(23,168,112,.12);
   border-radius:3px 0 0 3px;overflow:hidden;
   display:flex;justify-content:flex-end;
 }
 .cbar-l-fill{height:100%;background:var(--g);border-radius:3px 0 0 3px;transition:width .5s ease;min-width:2px;}
-.cbar-lbl{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;}
+.cbar-lbl{font-size:.5rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);text-align:center;white-space:nowrap;}
 .cbar-r{
-  height:6px;
+  height:5px;
   background:rgba(217,82,40,.12);
   border-radius:0 3px 3px 0;overflow:hidden;
 }
 .cbar-r-fill{height:100%;background:var(--r);border-radius:0 3px 3px 0;transition:width .5s ease;min-width:2px;}
-.cbar-v2{font-size:.9rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;line-height:1;}
+.cbar-v2{font-size:.82rem;font-weight:800;color:var(--rt);text-align:left;font-variant-numeric:tabular-nums;line-height:1;}
 .cbar-mid{display:none;}
 
 /* Win overlay on PC dashboard */
@@ -200,7 +200,7 @@ input{font-family:inherit;}
 /* HP number */
 .m-hp{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(5rem,22vh,12rem);
+  font-size:clamp(4.5rem,35vh,11rem);
   line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;flex-shrink:0;
 }
 
@@ -212,7 +212,7 @@ input{font-family:inherit;}
 .m-name{
   writing-mode:vertical-rl;
   transform:rotate(180deg);
-  font-size:clamp(.55rem,1.2vh,.78rem);
+  font-size:clamp(.6rem,1.5vh,.9rem);
   letter-spacing:.2em;text-transform:uppercase;font-weight:700;white-space:nowrap;
 }
 .m-dots{display:flex;flex-direction:column;gap:5px;}
@@ -542,7 +542,8 @@ async function loadPlayers(){
     for(const row of rows){
       const c=csvRow(row),name=c[0]?.trim()
       if(!name||name.toLowerCase()==='player')continue
-      data.push({name,elo:+c[1]||0,games:+c[2]||0,wins:+c[3]||0,losses:+c[4]||0,draws:+c[5]||0,winrate:+c[6]||0,peakElo:+c[7]||0,rank:0})
+      const wrRaw=c[6]?.replace('%','').trim()
+      data.push({name,elo:+c[1]||0,games:+c[2]||0,wins:+c[3]||0,losses:+c[4]||0,draws:+c[5]||0,winrate:+wrRaw||0,peakElo:+c[7]||0,rank:0})
     }
     data.sort((a,b)=>b.elo-a.elo);data.forEach((p,i)=>p.rank=i+1);players=data
     maxS={
@@ -663,23 +664,24 @@ function setHudHP(n,hp){
 function pCardHTML(p,side,lbl,ct){
   if(!p)return`<p class="pc-lbl" style="color:${ct};">${lbl}</p><p style="font-size:.875rem;color:var(--tm);">Čekám na výběr…</p>`
   const stRows=p.inList?[['Pořadí',`#${p.rank}`],['Počet her',p.games]].map(([l,v])=>`<div class="pc-stat"><span class="pc-stat-lbl">${l}</span><span style="color:${ct};font-weight:700;">${v}</span></div>`).join(''):'<p style="font-size:.8rem;color:var(--tm);">Není v žebříčku</p>'
-  const meta=side==='left'?`#${p.rank} · ${p.elo} ELO · ${(p.winrate||0).toFixed(0)}% WR`:`${(p.winrate||0).toFixed(0)}% WR · ${p.elo} ELO · #${p.rank}`
+  const wrDisp=(p.winrate||0).toFixed(1)+'%'
+  const meta=side==='left'?`#${p.rank} · ${p.elo} ELO · ${wrDisp} WR`:`${wrDisp} WR · ${p.elo} ELO · #${p.rank}`
   return`<p class="pc-lbl" style="color:${ct};">${lbl}</p>
     <p class="pc-name" style="color:${ct};">${p.name}</p>
     ${p.inList?`<p class="pc-meta" style="color:${ct};">${meta}</p>`:''}
     <div>${stRows}</div>`
 }
 function cBarHTML(lbl,v1,v2,mx){
-  // Both bars scale from 0 (center) outward – symmetric diverging
   const w1=mx>0?Math.min(v1/mx*100,100):0
   const w2=mx>0?Math.min(v2/mx*100,100):0
-  const f=v=>v%1?v.toFixed(1):v
+  const isWR=lbl==='WINRATE'
+  const fmt=v=>isWR?v.toFixed(1)+'%':(v%1?v.toFixed(1):String(v))
   return`<div class="cbar">
-    <span class="cbar-v1">${f(v1)}</span>
+    <span class="cbar-v1">${fmt(v1)}</span>
     <div class="cbar-l"><div class="cbar-l-fill" style="width:${w1}%;"></div></div>
     <span class="cbar-lbl">${lbl}</span>
     <div class="cbar-r"><div class="cbar-r-fill" style="width:${w2}%;"></div></div>
-    <span class="cbar-v2">${f(v2)}</span>
+    <span class="cbar-v2">${fmt(v2)}</span>
   </div>`
 }
 
@@ -767,7 +769,7 @@ async function declWin(w){
   el('gwin-cont-btn').textContent=isOver?'Výsledky →':'Pokračovat →'
   el('gwin-name').textContent=winName;el('gwin-name').style.color=winCol
   let st=''
-  if(winP?.inList)st=`<div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">#${winP.rank}</div><div class="gwin-stat-lbl">Pořadí</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.elo}</div><div class="gwin-stat-lbl">ELO</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${(winP.winrate||0).toFixed(0)}%</div><div class="gwin-stat-lbl">Winrate</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.wins}W/${winP.losses}L</div><div class="gwin-stat-lbl">Bilance</div></div>`
+  if(winP?.inList)st=`<div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">#${winP.rank}</div><div class="gwin-stat-lbl">Pořadí</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.elo}</div><div class="gwin-stat-lbl">ELO</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${(winP.winrate||0).toFixed(1)}%</div><div class="gwin-stat-lbl">Winrate</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.wins}W/${winP.losses}L</div><div class="gwin-stat-lbl">Bilance</div></div>`
   el('gwin-stats').innerHTML=st;mRHP(1);mRHP(2);mRDots(1);mRDots(2);showOv('ov-gwin')
 }
 async function continueAfterGame(){
