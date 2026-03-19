@@ -424,15 +424,13 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player B: TOP half, rotated 180° → reads from phone top edge
-       Column from their POV: [name+dots inner] [HP] [buttons outer] -->
   <div class="m-half pb">
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+    </div>
     <div class="m-namerow">
       <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
       <div class="m-dots" id="m-d2"></div>
-    </div>
-    <div class="m-hp-area">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
     </div>
     <div class="m-btnrow">
       <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
@@ -447,15 +445,13 @@ input{font-family:inherit;}
     <button class="mob-done" onclick="mDohrano()">DOHR&Aacute;NO</button>
   </div>
 
-  <!-- Player A: BOTTOM half, normal → reads from phone bottom edge
-       Column: [name+dots inner] [HP] [buttons outer] -->
   <div class="m-half pa">
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
+    </div>
     <div class="m-namerow">
       <p class="m-name" id="m-na" style="color:var(--gt);"></p>
       <div class="m-dots" id="m-d1"></div>
-    </div>
-    <div class="m-hp-area">
-      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
     </div>
     <div class="m-btnrow">
       <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
