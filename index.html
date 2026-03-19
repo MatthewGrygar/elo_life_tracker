@@ -12,9 +12,9 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#0a0d14;--surf:#12161f;--card:#181d2a;--card2:#1e2435;
-  --b:rgba(255,255,255,.07);--bm:rgba(255,255,255,.14);--bh:rgba(255,255,255,.26);
-  --g:#17a870;--gl:rgba(23,168,112,.14);--gb:rgba(23,168,112,.32);--gt:#3ec995;
-  --r:#d95228;--rl:rgba(217,82,40,.14);--rb:rgba(217,82,40,.32);--rt:#f07550;
+  --b:rgba(255,255,255,.07);--bm:rgba(255,255,255,.14);--bh:rgba(255,255,255,.28);
+  --g:#17a870;--gl:rgba(23,168,112,.13);--gb:rgba(23,168,112,.30);--gt:#3ec995;--gd:#0d6647;
+  --r:#d95228;--rl:rgba(217,82,40,.13);--rb:rgba(217,82,40,.30);--rt:#f07550;--rd:#7a2a10;
   --y:#c4953d;--yl:rgba(196,149,61,.13);--yb:rgba(196,149,61,.32);
   --tx:#d8dce8;--tm:#636880;--td:#1e2235;
   --danger:#e24b4b;
@@ -24,13 +24,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--tx);font-family:'Inte
 button{cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 input{font-family:inherit;}
 .lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);}
-.scr{display:none;min-height:100dvh;flex-direction:column;}
+.scr{display:none;flex-direction:column;}
 .scr.on{display:flex;}
 .back{background:none;border:none;font-size:.8rem;color:var(--tm);cursor:pointer;padding:4px 0;}
-.card{background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);padding:1.25rem;}
 
-/* HOME */
-#home{align-items:center;justify-content:center;gap:2.5rem;padding:2rem;text-align:center;}
+/* ══ HOME ══════════════════════════════════════ */
+#home{min-height:100dvh;align-items:center;justify-content:center;gap:2.5rem;padding:2rem;text-align:center;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,10vw,5rem);letter-spacing:.08em;line-height:1;
   background:linear-gradient(135deg,var(--gt),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .mode-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
@@ -40,54 +39,115 @@ input{font-family:inherit;}
 .mode-btn .ttl{font-size:.9375rem;font-weight:600;color:var(--y);margin-bottom:.35rem;}
 .mode-btn .dsc{font-size:.775rem;color:var(--tm);line-height:1.55;}
 
-/* PC WAIT */
-#pc-wait{align-items:center;justify-content:center;gap:2rem;padding:2rem;text-align:center;}
-.code-box{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,5.5rem);letter-spacing:.5em;padding-left:.5em;
+/* ══ PC WAIT ══════════════════════════════════ */
+#pc-wait{min-height:100dvh;align-items:center;justify-content:center;gap:2rem;padding:2rem;text-align:center;}
+.code-box{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,5.5rem);letter-spacing:.5em;
   color:var(--y);background:var(--yl);border:1px solid var(--yb);border-radius:var(--rrl);padding:.875rem 2.5rem;}
 .pulse-row{display:flex;align-items:center;gap:.5rem;color:var(--tm);font-size:.875rem;}
 .pulse{width:8px;height:8px;border-radius:50%;background:var(--y);animation:blink 1.4s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* PC DASHBOARD */
-#pc-dash{padding:1.25rem;gap:1.1rem;max-width:920px;margin:0 auto;width:100%;}
+/* ══ PC DASHBOARD ══════════════════════════════ */
+/* Whole dashboard fits 16:9 in one screen */
+#pc-dash{
+  height:100dvh;max-height:100dvh;overflow:hidden;
+  padding:.875rem 1.25rem;
+  display:flex;flex-direction:column;gap:.75rem;
+  max-width:1080px;margin:0 auto;width:100%;
+}
 
-/* HUD */
-.hud{display:flex;align-items:center;background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);padding:1rem 1.5rem;gap:.75rem;}
-.hud-side{flex:1;display:flex;align-items:center;gap:.625rem;min-width:0;}
-.hud-side.right{flex-direction:row-reverse;}
-.hud-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hud-hp{font-family:'Bebas Neue',sans-serif;font-size:2.75rem;line-height:1;font-variant-numeric:tabular-nums;min-width:2.5ch;text-align:center;}
+/* HUD: Jméno dots HP | HP dots Jméno */
+.hud{
+  display:flex;align-items:center;
+  background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);
+  padding:.75rem 1.25rem;gap:0;flex-shrink:0;
+}
+.hud-half{
+  flex:1;display:flex;align-items:center;gap:.625rem;min-width:0;
+}
+.hud-half.right{flex-direction:row-reverse;}
+.hud-name{
+  font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;
+}
+.hud-half.right .hud-name{text-align:right;}
 .hud-dots{display:flex;gap:4px;flex-shrink:0;}
 .wdot{width:11px;height:11px;border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
-.hud-vs{font-size:.65rem;letter-spacing:.12em;color:var(--td);flex-shrink:0;padding:0 .25rem;}
+/* HP centered: both HPs sit adjacent in center */
+.hud-hp{
+  font-family:'Bebas Neue',sans-serif;font-size:3.25rem;line-height:1;
+  font-variant-numeric:tabular-nums;min-width:2.5ch;text-align:center;flex-shrink:0;
+}
+.hud-sep{
+  width:1px;background:var(--bm);height:2.5rem;flex-shrink:0;margin:0 .5rem;
+}
 
-/* Player info */
-.pinfo-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.pinfo{border-radius:var(--rrl);padding:1.25rem;}
-.pinfo-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.75rem,4vw,2.75rem);letter-spacing:.04em;line-height:1;margin-bottom:.35rem;}
-.pinfo-meta{font-size:.8rem;color:var(--tm);margin-bottom:.75rem;}
-.stat-row{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;border-bottom:1px solid var(--b);}
-.stat-row:last-child{border-bottom:none;}
+/* ══ PLAYER CARDS ══════════════════════════════ */
+.cards-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:.875rem;flex-shrink:0;
+}
+.pcard{
+  border-radius:var(--rrl);padding:1rem 1.25rem;position:relative;overflow:hidden;
+}
+.pcard.left{background:var(--gl);border:1px solid var(--gb);}
+.pcard.right{background:var(--rl);border:1px solid var(--rb);}
+.pc-lbl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:.375rem;}
+.pc-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,3.5vw,3rem);
+  letter-spacing:.04em;line-height:1;margin-bottom:.25rem;
+}
+.pcard.right .pc-name{text-align:right;}
+.pcard.right .pc-lbl{text-align:right;}
+.pc-meta{font-size:.8rem;margin-bottom:.75rem;}
+.pcard.right .pc-meta{text-align:right;}
 
-/* Compare */
-.cbar{margin-bottom:1.1rem;}
-.cbar-label{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tm);text-align:center;margin-bottom:.25rem;}
-.cbar-nums{display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.3rem;font-weight:500;}
-.cbar-track{display:flex;height:9px;border-radius:5px;overflow:hidden;}
+/* Stat rows: label value | value label */
+.pc-stats{display:flex;flex-direction:column;gap:0;}
+.pc-stat{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:.8125rem;
+}
+.pc-stat:last-child{border-bottom:none;}
+.pcard.left .pc-stat-lbl{color:var(--tm);order:0;}
+.pcard.left .pc-stat-val{color:var(--gt);font-weight:600;order:1;}
+.pcard.right .pc-stat-lbl{color:var(--tm);order:1;}
+.pcard.right .pc-stat-val{color:var(--rt);font-weight:600;order:0;}
+
+/* ══ COMPARE ═══════════════════════════════════ */
+.cmp-card{
+  background:var(--card);border:1px solid var(--b);border-radius:var(--rrl);
+  padding:.875rem 1.5rem;flex:1;min-height:0;display:flex;flex-direction:column;
+}
+.cmp-title{
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);
+  text-align:center;margin-bottom:.875rem;flex-shrink:0;
+}
+.cmp-bars{display:flex;flex-direction:column;gap:.5rem;flex:1;justify-content:space-evenly;}
+.cbar{display:flex;flex-direction:column;gap:.2rem;}
+.cbar-head{
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+}
+.cbar-v1{font-size:1rem;font-weight:700;color:var(--gt);min-width:3.5ch;text-align:left;}
+.cbar-lbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tm);flex:1;text-align:center;}
+.cbar-v2{font-size:1rem;font-weight:700;color:var(--rt);min-width:3.5ch;text-align:right;}
+.cbar-track{display:flex;height:10px;border-radius:5px;overflow:hidden;}
 .cbar-l{flex:1;background:rgba(23,168,112,.08);display:flex;justify-content:flex-end;}
-.cbar-l-fill{height:100%;border-radius:4px 0 0 4px;background:var(--g);transition:width .4s ease;}
+.cbar-l-fill{height:100%;background:var(--g);transition:width .4s ease;}
 .cbar-sep{width:2px;background:var(--bm);flex-shrink:0;}
 .cbar-r{flex:1;background:rgba(217,82,40,.08);}
-.cbar-r-fill{height:100%;border-radius:0 4px 4px 0;background:var(--r);transition:width .4s ease;}
+.cbar-r-fill{height:100%;background:var(--r);transition:width .4s ease;}
 
-/* MOBILE CODE */
-#mob-code{align-items:center;justify-content:center;gap:1.5rem;padding:2rem;text-align:center;}
-#mob-code input{width:210px;text-align:center;font-size:2.5rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.4em;padding:.625rem .5rem;
-  background:var(--card);border:1px solid var(--bm);border-radius:var(--rr);color:var(--y);outline:none;}
+/* ══ MOBILE CODE ══════════════════════════════ */
+#mob-code{min-height:100dvh;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;text-align:center;}
+#mob-code input{width:210px;text-align:center;font-size:2.5rem;font-family:'Bebas Neue',sans-serif;
+  letter-spacing:.4em;padding:.625rem .5rem;background:var(--card);border:1px solid var(--bm);
+  border-radius:var(--rr);color:var(--y);outline:none;}
 #mob-code input:focus{border-color:var(--yb);}
 
-/* MOBILE SELECT */
-#mob-select{min-height:100dvh;}
+/* ══ MOBILE SELECT ════════════════════════════ */
+#mob-sel{min-height:100dvh;}
 .sel-head{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .sel-body{flex:1;display:flex;overflow:hidden;}
 .picker{flex:1;padding:12px;display:flex;flex-direction:column;gap:9px;min-width:0;overflow-y:auto;}
@@ -103,39 +163,74 @@ input{font-family:inherit;}
 .primary-btn{padding:9px 1.75rem;background:var(--yl);border:1px solid var(--yb);color:var(--y);border-radius:var(--rr);font-size:.9375rem;font-weight:500;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
-/* MOBILE MATCH */
+/* ══ MOBILE MATCH ══════════════════════════════ */
 #mob-match{display:none;width:100vw;height:100dvh;overflow:hidden;position:relative;background:var(--bg);}
 #mob-match.on{display:flex;flex-direction:row;}
+
 .m-side{flex:1;position:relative;overflow:hidden;}
 .m-inner{
   position:absolute;top:50%;left:50%;
   width:100dvh;height:50vw;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
 }
+/* P1: rotate -90° (sits at left, reads from outer-left inward) */
 .m-side.p1 .m-inner{transform:translate(-50%,-50%) rotate(-90deg);}
-.m-side.p2 .m-inner{transform:translate(-50%,-50%) rotate(90deg);}
+/* P2: rotate +90° (sits at right, reads from outer-right inward)
+   column-reverse so item order is flipped: name at outer edge, btns toward center */
+.m-side.p2 .m-inner{
+  transform:translate(-50%,-50%) rotate(90deg);
+  flex-direction:column-reverse;
+}
+/* P2 buttons: row-reverse so +5,+1,−1,−5 reads correctly from their perspective */
+.m-side.p2 .m-btns{flex-direction:row-reverse;}
+
 .m-side-div{width:1px;background:var(--bm);flex-shrink:0;z-index:1;}
 .m-name{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%;}
 .m-dots{display:flex;gap:5px;}
-.m-hp{font-family:'Bebas Neue',sans-serif;font-size:clamp(4.5rem,14vw,7rem);line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
+.m-hp{font-family:'Bebas Neue',sans-serif;font-size:clamp(4.5rem,13vw,7rem);line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;}
 .m-btns{display:flex;gap:6px;}
 .m-btn{width:52px;height:46px;border-radius:var(--rrs);font-size:.875rem;font-weight:600;border-width:1px;border-style:solid;}
-.done-btn-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;
-  padding:5px 12px;font-size:.62rem;letter-spacing:.12em;background:var(--surf);border:1px solid var(--bh);border-radius:var(--rrs);color:var(--tm);white-space:nowrap;}
 
-/* OVERLAYS */
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,13,20,.92);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
+/* Fullscreen + Done buttons */
+.mob-done{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;
+  padding:5px 12px;font-size:.62rem;letter-spacing:.12em;
+  background:var(--surf);border:1px solid var(--bh);border-radius:var(--rrs);
+  color:var(--tm);white-space:nowrap;
+}
+.mob-fs{
+  position:absolute;bottom:8px;right:8px;z-index:10;
+  width:28px;height:28px;background:var(--surf);border:1px solid var(--bm);
+  border-radius:var(--rrs);color:var(--tm);font-size:11px;display:flex;align-items:center;justify-content:center;
+}
+
+/* ══ OVERLAYS ══════════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,13,20,.93);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
 .overlay.on{display:flex;}
 .ov-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
 .ov-btn{padding:12px 2rem;border-radius:var(--rr);font-size:.9375rem;font-weight:600;border-width:1px;border-style:solid;min-width:130px;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.match-win-box{background:var(--card);border:1px solid var(--bm);border-radius:var(--rrl);padding:2rem;text-align:center;max-width:340px;width:90%;}
-.match-win-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:.05em;margin:.5rem 0;}
+
+/* Game winner card (shown on mobile after each game) */
+.gwin-card{
+  background:var(--card);border-width:1px;border-style:solid;border-radius:var(--rrl);
+  padding:1.75rem 2rem;text-align:center;max-width:360px;width:92%;
+}
+.gwin-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,3.75rem);letter-spacing:.05em;margin:.375rem 0 .75rem;}
+.gwin-stats{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.gwin-stat{text-align:center;}
+.gwin-stat-val{font-size:1.25rem;font-weight:700;line-height:1;}
+.gwin-stat-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tm);margin-top:2px;}
+
+/* Match winner card */
+.mwin-card{background:var(--card);border:1px solid var(--bm);border-radius:var(--rrl);padding:2rem;text-align:center;max-width:360px;width:92%;}
+.mwin-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:.05em;margin:.5rem 0;}
+
 .err-msg{color:var(--danger);font-size:.8125rem;padding:8px 16px;border:1px solid rgba(226,75,75,.3);border-radius:var(--rrs);background:rgba(226,75,75,.08);}
 </style>
 </head>
 <body>
 
-<!-- HOME -->
+<!-- ████ HOME ████████████████████████████████████ -->
 <div id="home" class="scr on">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:2.5rem;padding:2rem;text-align:center;">
     <div>
@@ -147,7 +242,7 @@ input{font-family:inherit;}
       <button class="mode-btn" onclick="goPC()">
         <span class="ico">🖥️</span>
         <div class="ttl">Počítač</div>
-        <div class="dsc">Prezentační dashboard – životy + statistiky v reálném čase</div>
+        <div class="dsc">Dashboard se statistikami a živými životy v reálném čase</div>
       </button>
       <button class="mode-btn" onclick="goMobile()">
         <span class="ico">📱</span>
@@ -159,7 +254,7 @@ input{font-family:inherit;}
   </div>
 </div>
 
-<!-- PC WAIT -->
+<!-- ████ PC WAIT █████████████████████████████████ -->
 <div id="pc-wait" class="scr">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:2rem;padding:2rem;text-align:center;">
     <div>
@@ -167,46 +262,49 @@ input{font-family:inherit;}
       <div class="code-box" id="pc-code-disp">—</div>
     </div>
     <div class="pulse-row"><div class="pulse"></div><span>Čekám na připojení mobilu…</span></div>
-    <p style="font-size:.8rem;color:var(--tm);max-width:300px;line-height:1.6;">Otevři tuto stránku na mobilu,<br>zvol <strong style="color:var(--tx);">Mobil</strong> a zadej tento kód</p>
+    <p style="font-size:.8rem;color:var(--tm);max-width:300px;line-height:1.6;">
+      Otevři tuto stránku na mobilu, zvol <strong style="color:var(--tx);">Mobil</strong> a zadej tento kód
+    </p>
     <button class="back" onclick="cleanupHome()">← Zpět</button>
   </div>
 </div>
 
-<!-- PC DASHBOARD -->
+<!-- ████ PC DASHBOARD ████████████████████████████ -->
 <div id="pc-dash" class="scr">
-  <!-- HUD bar -->
-  <div style="padding:1.25rem 1.25rem 0;max-width:920px;margin:0 auto;width:100%;">
-    <div class="hud">
-      <div class="hud-side">
-        <span class="hud-name" id="hud-n1" style="color:var(--gt);"></span>
-        <div class="hud-dots" id="hud-d1"></div>
-        <span class="hud-hp" id="hud-hp1" style="color:var(--gt);">20</span>
-      </div>
-      <span class="hud-vs">VS</span>
-      <div class="hud-side right">
-        <span class="hud-hp" id="hud-hp2" style="color:var(--rt);">20</span>
-        <div class="hud-dots" id="hud-d2"></div>
-        <span class="hud-name" id="hud-n2" style="color:var(--rt);"></span>
-      </div>
+
+  <!-- HUD: Jméno · dots · HP | HP · dots · Jméno -->
+  <div class="hud">
+    <div class="hud-half">
+      <span class="hud-name" id="hud-n1" style="color:var(--gt);"></span>
+      <div class="hud-dots" id="hud-d1"></div>
+      <span class="hud-hp" id="hud-hp1" style="color:var(--gt);">20</span>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-half right">
+      <span class="hud-hp" id="hud-hp2" style="color:var(--rt);">20</span>
+      <div class="hud-dots" id="hud-d2"></div>
+      <span class="hud-name" id="hud-n2" style="color:var(--rt);"></span>
     </div>
   </div>
 
-  <div style="padding:1rem 1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.1rem;max-width:920px;margin:0 auto;width:100%;">
-    <!-- Big name + stats -->
-    <div class="pinfo-row">
-      <div class="pinfo" id="d-p1c" style="background:var(--gl);border:1px solid var(--gb);"></div>
-      <div class="pinfo" id="d-p2c" style="background:var(--rl);border:1px solid var(--rb);"></div>
-    </div>
-    <!-- Compare -->
-    <div class="card" id="d-cmp" style="display:none;">
-      <p class="lbl" style="text-align:center;margin-bottom:1.25rem;">POROVNÁNÍ</p>
-      <div id="d-bars"></div>
-    </div>
-    <div><button class="back" onclick="cleanupHome()">← Nový zápas</button></div>
+  <!-- Player cards -->
+  <div class="cards-row">
+    <div class="pcard left" id="d-p1c"></div>
+    <div class="pcard right" id="d-p2c"></div>
+  </div>
+
+  <!-- Compare bars -->
+  <div class="cmp-card" id="d-cmp" style="display:none;">
+    <p class="cmp-title">POROVNÁNÍ</p>
+    <div class="cmp-bars" id="d-bars"></div>
+  </div>
+
+  <div style="margin-top:auto;padding-top:.25rem;">
+    <button class="back" onclick="cleanupHome()">← Nový zápas</button>
   </div>
 </div>
 
-<!-- MOBILE CODE -->
+<!-- ████ MOBILE CODE ██████████████████████████████ -->
 <div id="mob-code" class="scr">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:1.5rem;padding:2rem;text-align:center;">
     <div>
@@ -222,7 +320,7 @@ input{font-family:inherit;}
   </div>
 </div>
 
-<!-- MOBILE SELECT -->
+<!-- ████ MOBILE SELECT ████████████████████████████ -->
 <div id="mob-sel" class="scr">
   <div class="sel-head">
     <p class="lbl">VÝBĚR HRÁČŮ</p>
@@ -230,6 +328,7 @@ input{font-family:inherit;}
   </div>
   <div id="sel-err" style="display:none;padding:9px 14px;font-size:.78rem;color:var(--danger);border-bottom:1px solid var(--b);">⚠ Data ze Sheets nedostupná</div>
   <div class="sel-body">
+    <!-- Hráč 1 -->
     <div class="picker">
       <p class="lbl" style="color:var(--gt);">HRÁČ 1</p>
       <div style="position:relative;">
@@ -243,6 +342,7 @@ input{font-family:inherit;}
       </div>
     </div>
     <div class="picker-div"></div>
+    <!-- Hráč 2 -->
     <div class="picker">
       <p class="lbl" style="color:var(--rt);">HRÁČ 2</p>
       <div style="position:relative;">
@@ -262,8 +362,10 @@ input{font-family:inherit;}
   </div>
 </div>
 
-<!-- MOBILE MATCH -->
+<!-- ████ MOBILE MATCH ████████████████████████████ -->
 <div id="mob-match" class="scr">
+
+  <!-- Hráč 1: rotate(-90°) – sedí vlevo, čte od vnějšího okraje dovnitř -->
   <div class="m-side p1">
     <div class="m-inner">
       <p class="m-name" id="m-n1" style="color:var(--gt);"></p>
@@ -277,7 +379,11 @@ input{font-family:inherit;}
       </div>
     </div>
   </div>
+
   <div class="m-side-div"></div>
+
+  <!-- Hráč 2: rotate(+90°) + column-reverse – sedí vpravo, čte od vnějšího okraje dovnitř -->
+  <!-- column-reverse + row-reverse opravuje pořadí po rotaci -->
   <div class="m-side p2">
     <div class="m-inner">
       <p class="m-name" id="m-n2" style="color:var(--rt);"></p>
@@ -291,10 +397,15 @@ input{font-family:inherit;}
       </div>
     </div>
   </div>
-  <button class="done-btn-center" onclick="showOv('ov-win')">DOHRÁNO</button>
+
+  <!-- Dohráno – uprostřed -->
+  <button class="mob-done" onclick="showOv('ov-win')">DOHRÁNO</button>
+
+  <!-- Fullscreen button -->
+  <button class="mob-fs" onclick="toggleFS()" id="fs-btn" title="Fullscreen">⛶</button>
 </div>
 
-<!-- OVERLAY: výběr vítěze hry -->
+<!-- ████ OVERLAY: výběr vítěze hry ██████████████ -->
 <div id="ov-win" class="overlay">
   <p class="lbl">KDO VYHRÁL HRU?</p>
   <div class="ov-btns">
@@ -304,41 +415,60 @@ input{font-family:inherit;}
   <button class="back" onclick="hideOv('ov-win')">Zrušit</button>
 </div>
 
-<!-- OVERLAY: vítěz matche BO3 -->
+<!-- ████ OVERLAY: vítěz hry (s daty) ████████████ -->
+<div id="ov-gwin" class="overlay">
+  <div class="gwin-card" id="gwin-card">
+    <p class="lbl" id="gwin-lbl" style="margin-bottom:.375rem;">VÝHRA</p>
+    <div class="gwin-name" id="gwin-name"></div>
+    <div class="gwin-stats" id="gwin-stats"></div>
+    <button class="primary-btn" id="gwin-cont-btn" onclick="continueAfterGame()" style="width:100%;margin-top:.25rem;">Pokračovat →</button>
+  </div>
+</div>
+
+<!-- ████ OVERLAY: vítěz matche BO3 ██████████████ -->
 <div id="ov-match" class="overlay">
-  <div class="match-win-box">
-    <p class="lbl" style="margin-bottom:.5rem;">VÍTĚZ MATCHE</p>
-    <div class="match-win-name" id="match-win-nm"></div>
-    <p style="font-size:.8rem;color:var(--tm);margin:.375rem 0 1.5rem;">vyhrál BO3!</p>
+  <div class="mwin-card">
+    <p class="lbl" style="margin-bottom:.5rem;">VÍTĚZ MATCHE BO3</p>
+    <div class="mwin-name" id="match-win-nm"></div>
+    <p style="font-size:.8rem;color:var(--tm);margin:.375rem 0 1.5rem;"></p>
     <button class="primary-btn" onclick="resetToSel()" style="width:100%;">Nový výběr hráčů →</button>
   </div>
 </div>
 
 <script>
-// ── CONFIG ─────────────────────────────────────────
-// Toto je tvůj Firebase projekt z dc-elo-life-tracker
-// Pokud chceš jiný projekt, změň DB_URL
+// ── CONFIG ──────────────────────────────────────────
 const SHEET_ID = '1y98bzsIRpVv0_cGNfbITapucO5A6izeEz5lTM92ZbIA'
-const DB_URL = 'https://dc-elo-life-tracker-default-rtdb.europe-west1.firebasedatabase.app'
+const DB_URL   = 'https://dc-elo-life-tracker-default-rtdb.europe-west1.firebasedatabase.app'
 
-// ── STATE ──────────────────────────────────────────
+// ── STATE ───────────────────────────────────────────
 let players=[], maxS={elo:1,games:1,wins:1,peakElo:1}
-let S={mode:'',code:'',room:null,es:null,p1:null,p2:null,p1nil:false,p2nil:false,p1hp:20,p2hp:20,p1w:0,p2w:0}
+let S={mode:'',code:'',room:null,es:null,
+       p1:null,p2:null,p1nil:false,p2nil:false,
+       p1hp:20,p2hp:20,p1w:0,p2w:0,
+       pendingWinner:0}  // winner waiting for continue tap
 let ddTimer={}
 
-// ── FIREBASE REST ──────────────────────────────────
-async function dbSet(p,d){await fetch(`${DB_URL}/${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
-async function dbPatch(p,d){await fetch(`${DB_URL}/${p}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
-async function dbGet(p){const r=await fetch(`${DB_URL}/${p}.json`);return r.ok?r.json():null}
-
+// ── FIREBASE REST ───────────────────────────────────
+async function dbSet(p,d){
+  await fetch(`${DB_URL}/${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+}
+async function dbPatch(p,d){
+  await fetch(`${DB_URL}/${p}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+}
+async function dbGet(p){
+  const r=await fetch(`${DB_URL}/${p}.json`); return r.ok?r.json():null
+}
 function dbSub(path,cb){
   if(S.es){S.es.close();S.es=null}
   const es=new EventSource(`${DB_URL}/${path}.json`)
   es.addEventListener('put',e=>{
-    try{const {path:pp,data}=JSON.parse(e.data);if(pp==='/'||pp===''){S.room=data}else applyPath(S.room,pp,data);cb(S.room)}catch(ex){}
+    try{const {path:pp,data}=JSON.parse(e.data)
+      if(pp==='/'||pp===''){S.room=data}else applyPath(S.room,pp,data)
+      cb(S.room)
+    }catch{}
   })
   es.addEventListener('patch',e=>{
-    try{const {data}=JSON.parse(e.data);if(S.room&&data)Object.assign(S.room,data);cb(S.room)}catch(ex){}
+    try{const {data}=JSON.parse(e.data);if(S.room&&data)Object.assign(S.room,data);cb(S.room)}catch{}
   })
   S.es=es
 }
@@ -346,11 +476,11 @@ function applyPath(obj,path,val){
   if(!obj)return
   const parts=path.replace(/^\//,'').split('/').filter(Boolean)
   let cur=obj
-  for(let i=0;i<parts.length-1;i++){if(cur[parts[i]]===undefined)cur[parts[i]]={};cur=cur[parts[i]]}
+  for(let i=0;i<parts.length-1;i++){if(!cur[parts[i]])cur[parts[i]]={};cur=cur[parts[i]]}
   if(parts.length)cur[parts[parts.length-1]]=val
 }
 
-// ── SHEETS ─────────────────────────────────────────
+// ── SHEETS ──────────────────────────────────────────
 async function loadPlayers(){
   try{
     const res=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`)
@@ -360,10 +490,18 @@ async function loadPlayers(){
     for(const row of rows){
       const c=csvRow(row);const name=c[0]?.trim()
       if(!name||name.toLowerCase()==='player')continue
-      data.push({name,elo:+c[1]||0,games:+c[2]||0,wins:+c[3]||0,losses:+c[4]||0,winrate:+c[5]||0,draws:+c[6]||0,peakElo:+c[7]||0,rank:0})
+      data.push({name,elo:+c[1]||0,games:+c[2]||0,wins:+c[3]||0,losses:+c[4]||0,
+                 winrate:+c[5]||0,draws:+c[6]||0,peakElo:+c[7]||0,rank:0})
     }
-    data.sort((a,b)=>b.elo-a.elo);data.forEach((p,i)=>p.rank=i+1);players=data
-    maxS={elo:Math.max(...data.map(p=>p.elo),1),games:Math.max(...data.map(p=>p.games),1),wins:Math.max(...data.map(p=>p.wins),1),peakElo:Math.max(...data.map(p=>p.peakElo),1)}
+    data.sort((a,b)=>b.elo-a.elo)
+    data.forEach((p,i)=>p.rank=i+1)
+    players=data
+    maxS={
+      elo:Math.max(...data.map(p=>p.elo),1),
+      games:Math.max(...data.map(p=>p.games),1),
+      wins:Math.max(...data.map(p=>p.wins),1),
+      peakElo:Math.max(...data.map(p=>p.peakElo),1)
+    }
     setText('home-status',`● ${data.length} hráčů ze Sheets`,'var(--gt)')
     setText('sel-status',`● ${data.length} hráčů`,'var(--gt)')
   }catch{
@@ -371,9 +509,13 @@ async function loadPlayers(){
     show('sel-err')
   }
 }
-function csvRow(row){const r=[];let cur='',q=false;for(const c of row){if(c==='"')q=!q;else if(c===','&&!q){r.push(cur.trim());cur=''}else cur+=c}r.push(cur.trim());return r}
+function csvRow(row){
+  const r=[];let cur='',q=false
+  for(const c of row){if(c==='"')q=!q;else if(c===','&&!q){r.push(cur.trim());cur=''}else cur+=c}
+  r.push(cur.trim());return r
+}
 
-// ── UTILS ──────────────────────────────────────────
+// ── UTILS ────────────────────────────────────────────
 function showScr(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));el(id).classList.add('on')}
 function el(id){return document.getElementById(id)}
 function setText(id,t,c){const e=el(id);if(e){e.textContent=t;if(c)e.style.color=c}}
@@ -381,85 +523,130 @@ function show(id){el(id).style.display='block'}
 function hide(id){el(id).style.display='none'}
 function showOv(id){el(id).classList.add('on')}
 function hideOv(id){el(id).classList.remove('on')}
-
-function dots(wins,col){return[1,2].map(i=>`<span class="wdot" style="border-color:${col};background:${wins>=i?col:'transparent'};"></span>`).join('')}
+function dots(n,col){
+  return[1,2].map(i=>`<span class="wdot" style="border-color:${col};background:${n>=i?col:'transparent'};"></span>`).join('')
+}
 
 function cleanupHome(){
   if(S.es){S.es.close();S.es=null}
-  S.room=null;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false;S.p1hp=20;S.p2hp=20;S.p1w=0;S.p2w=0
-  hideOv('ov-win');hideOv('ov-match')
+  Object.assign(S,{room:null,p1:null,p2:null,p1nil:false,p2nil:false,p1hp:20,p2hp:20,p1w:0,p2w:0,pendingWinner:0})
+  hideOv('ov-win');hideOv('ov-gwin');hideOv('ov-match')
   showScr('home')
 }
 
-// ── PC FLOW ────────────────────────────────────────
+// ── FULLSCREEN ───────────────────────────────────────
+function toggleFS(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen?.()
+    el('fs-btn').textContent='✕'
+  }else{
+    document.exitFullscreen?.()
+    el('fs-btn').textContent='⛶'
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  const btn=el('fs-btn')
+  if(btn)btn.textContent=document.fullscreenElement?'✕':'⛶'
+})
+
+// ── PC FLOW ──────────────────────────────────────────
 async function goPC(){
   S.mode='pc'
   const code=String(10000+Math.floor(Math.random()*90000));S.code=code
   el('pc-code-disp').textContent=code
   showScr('pc-wait')
   try{
-    await dbSet(`rooms/${code}`,{code,pcOK:true,mobOK:false,p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'waiting',ts:Date.now()})
+    await dbSet(`rooms/${code}`,{code,pcOK:true,mobOK:false,p1:null,p2:null,
+      p1hp:20,p2hp:20,p1w:0,p2w:0,status:'waiting',ts:Date.now()})
     dbSub(`rooms/${code}`,onPCRoom)
-  }catch(e){alert('Firebase chyba: '+e.message+'\n\nZkontroluj DB_URL a pravidla Firebase (test mode).')}
+  }catch(e){
+    alert('Firebase chyba: '+e.message+'\n\nZkontroluj DB_URL a pravidla Firebase.')
+  }
 }
 
 function onPCRoom(room){
   if(!room)return;S.room=room
   if(room.status==='selecting'||room.status==='playing'||room.status==='match-over'){
-    renderPCDash();showScr('pc-dash')
+    renderPC();showScr('pc-dash')
   }
 }
 
-function renderPCDash(){
+function renderPC(){
   const r=S.room;if(!r)return
-  const p1=r.p1,p2=r.p2,n1=p1?.name||'Hráč 1',n2=p2?.name||'Hráč 2'
+  const p1=r.p1,p2=r.p2
   const hp1=r.p1hp??20,hp2=r.p2hp??20,w1=r.p1w??0,w2=r.p2w??0
 
-  setText('hud-n1',n1);setText('hud-n2',n2)
-  hudHP(1,hp1);hudHP(2,hp2)
+  // HUD
+  setText('hud-n1',p1?.name||'Hráč 1')
+  setText('hud-n2',p2?.name||'Hráč 2')
+  setHudHP(1,hp1);setHudHP(2,hp2)
   el('hud-d1').innerHTML=dots(w1,'var(--g)')
   el('hud-d2').innerHTML=dots(w2,'var(--r)')
 
-  el('d-p1c').innerHTML=pCard(p1,'var(--gt)','HRÁČ 1')
-  el('d-p2c').innerHTML=pCard(p2,'var(--rt)','HRÁČ 2')
+  // Cards
+  el('d-p1c').innerHTML=pCardHTML(p1,'left','HRÁČ 1','var(--gt)')
+  el('d-p2c').innerHTML=pCardHTML(p2,'right','HRÁČ 2','var(--rt)')
 
+  // Compare
   const cmp=el('d-cmp')
   if(p1?.inList&&p2?.inList){
-    cmp.style.display='block'
+    cmp.style.display='flex'
     el('d-bars').innerHTML=[
-      {l:'ELO',v1:p1.elo,v2:p2.elo,mx:maxS.elo},
-      {l:'Počet her',v1:p1.games,v2:p2.games,mx:maxS.games},
-      {l:'Výhry',v1:p1.wins,v2:p2.wins,mx:maxS.wins},
-      {l:'Winrate %',v1:+(p1.winrate||0).toFixed(1),v2:+(p2.winrate||0).toFixed(1),mx:100},
-      {l:'Peak ELO',v1:p1.peakElo,v2:p2.peakElo,mx:maxS.peakElo},
-    ].map(b=>cBar(b.l,b.v1,b.v2,b.mx)).join('')
-  }else cmp.style.display='none'
+      {l:'ELO',         v1:p1.elo,               v2:p2.elo,               mx:maxS.elo},
+      {l:'Počet her',   v1:p1.games,             v2:p2.games,             mx:maxS.games},
+      {l:'Výhry',       v1:p1.wins,              v2:p2.wins,              mx:maxS.wins},
+      {l:'Winrate %',   v1:+(p1.winrate||0).toFixed(1), v2:+(p2.winrate||0).toFixed(1), mx:100},
+      {l:'Peak ELO',    v1:p1.peakElo,           v2:p2.peakElo,           mx:maxS.peakElo},
+    ].map(b=>cBarHTML(b.l,b.v1,b.v2,b.mx)).join('')
+  }else{
+    cmp.style.display='none'
+  }
 }
 
-function hudHP(n,hp){
+function setHudHP(n,hp){
   const lo=hp<=5,col=lo?'var(--danger)':(n===1?'var(--gt)':'var(--rt)')
   const e=el(`hud-hp${n}`);if(e){e.textContent=hp;e.style.color=col}
 }
 
-function pCard(p,ct,lbl){
-  if(!p)return`<p class="lbl" style="color:${ct};margin-bottom:.625rem;">${lbl}</p><p style="font-size:.875rem;color:var(--tm);">Čekám na výběr…</p>`
-  const stats=p.inList?[
-    ['Pořadí',`#${p.rank}`],['ELO',p.elo],['Počet her',p.games],['Výhry',p.wins],
-    ['Prohry',p.losses],['Remízy',p.draws],['Winrate',`${(p.winrate||0).toFixed(1)}%`],['Peak ELO',p.peakElo]
-  ].map(([l,v])=>`<div class="stat-row"><span style="color:var(--tm);">${l}</span><span style="color:${ct};font-weight:500;">${v}</span></div>`).join('')
-  :`<p style="font-size:.8rem;color:var(--tm);">Není v žebříčku</p>`
-  return`<p class="lbl" style="color:${ct};margin-bottom:.5rem;">${lbl}</p>
-    <p class="pinfo-name" style="color:${ct};">${p.name}</p>
-    ${p.inList?`<p class="pinfo-meta">#${p.rank} · ${p.elo} ELO · ${(p.winrate||0).toFixed(0)}% WR</p>`:''}
-    ${stats}`
+function pCardHTML(p,side,lbl,ct){
+  if(!p){
+    return`<p class="pc-lbl" style="color:${ct};">${lbl}</p>
+      <p class="pc-name" style="color:${ct};">&nbsp;</p>
+      <p style="font-size:.875rem;color:var(--tm);">Čekám na výběr…</p>`
+  }
+  const align=side==='right'?'right':'left'
+  // Only show: pořadí, počet her (as requested)
+  const statRows=p.inList?[
+    ['Pořadí', `#${p.rank}`],
+    ['Počet her', p.games],
+  ].map(([l,v])=>`
+    <div class="pc-stat">
+      <span class="pc-stat-lbl">${l}</span>
+      <span class="pc-stat-val">${v}</span>
+    </div>`).join('')
+  :`<p style="font-size:.8rem;color:var(--tm);text-align:${align};">Není v žebříčku</p>`
+
+  return`
+    <p class="pc-lbl" style="color:${ct};">${lbl}</p>
+    <p class="pc-name" style="color:${ct};">${p.name}</p>
+    ${p.inList?`<p class="pc-meta" style="color:${ct};opacity:.7;">${
+      side==='left'
+        ? `#${p.rank} · ${p.elo} ELO · ${(p.winrate||0).toFixed(0)}% WR`
+        : `${(p.winrate||0).toFixed(0)}% WR · ${p.elo} ELO · #${p.rank}`
+    }</p>`:''}
+    <div class="pc-stats">${statRows}</div>`
 }
 
-function cBar(lbl,v1,v2,mx){
-  const w1=mx>0?Math.min(v1/mx*100,100):0,w2=mx>0?Math.min(v2/mx*100,100):0
+function cBarHTML(lbl,v1,v2,mx){
+  const w1=mx>0?Math.min(v1/mx*100,100):0
+  const w2=mx>0?Math.min(v2/mx*100,100):0
   const f=v=>v%1?v.toFixed(1):v
   return`<div class="cbar">
-    <p class="cbar-label">${lbl}</p>
-    <div class="cbar-nums"><span style="color:var(--gt);">${f(v1)}</span><span style="color:var(--rt);">${f(v2)}</span></div>
+    <div class="cbar-head">
+      <span class="cbar-v1">${f(v1)}</span>
+      <span class="cbar-lbl">${lbl}</span>
+      <span class="cbar-v2">${f(v2)}</span>
+    </div>
     <div class="cbar-track">
       <div class="cbar-l"><div class="cbar-l-fill" style="width:${w1}%;"></div></div>
       <div class="cbar-sep"></div>
@@ -468,7 +655,7 @@ function cBar(lbl,v1,v2,mx){
   </div>`
 }
 
-// ── MOBILE FLOW ────────────────────────────────────
+// ── MOBILE FLOW ──────────────────────────────────────
 function goMobile(){
   S.mode='mobile'
   el('mob-inp').value='';hide('mob-err');el('join-btn').disabled=true
@@ -481,32 +668,49 @@ async function joinRoom(){
   hide('mob-err');el('join-btn').textContent='Připojuji…';el('join-btn').disabled=true
   try{
     const room=await dbGet(`rooms/${code}`)
-    if(!room){el('mob-err').textContent='Místnost nenalezena.';show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false;return}
+    if(!room){
+      el('mob-err').textContent='Místnost nenalezena. Zkontroluj kód.'
+      show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false;return
+    }
     S.code=code;S.room=room
     await dbPatch(`rooms/${code}`,{mobOK:true,status:'selecting'})
     rPicker(1);rPicker(2);el('start-btn').disabled=true
-    setText('sel-status',players.length?`● ${players.length} hráčů`:'○','var(--gt)')
+    setText('sel-status',players.length?`● ${players.length} hráčů`:'○ bez dat','var(--gt)')
     showScr('mob-sel')
     el('join-btn').textContent='Připojit'
-  }catch(e){el('mob-err').textContent='Chyba: '+e.message;show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false}
+  }catch(e){
+    el('mob-err').textContent='Chyba: '+e.message
+    show('mob-err');el('join-btn').textContent='Připojit';el('join-btn').disabled=false
+  }
 }
 
-// ── PICKER ─────────────────────────────────────────
-function fDrop(n){const q=el(`q${n}`).value.toLowerCase();if(n===1){S.p1=null;hide('p1info')}else{S.p2=null;hide('p2info')};rDrop(n,q);chkStart()}
+// ── PICKER ───────────────────────────────────────────
+function fDrop(n){
+  const q=el(`q${n}`).value.toLowerCase()
+  if(n===1){S.p1=null;hide('p1info')}else{S.p2=null;hide('p2info')}
+  rDrop(n,q);chkStart()
+}
 function oDrop(n){rDrop(n,el(`q${n}`).value.toLowerCase())}
 function cDrop(n){ddTimer[n]=setTimeout(()=>{const d=el(`dd${n}`);if(d)d.style.display='none'},200)}
 
 function rDrop(n,q){
-  const dd=el(`dd${n}`),filtered=players.filter(p=>p.name.toLowerCase().includes(q)).slice(0,8)
+  const dd=el(`dd${n}`)
+  const filtered=players.filter(p=>p.name.toLowerCase().includes(q)).slice(0,8)
   if(!filtered.length){dd.style.display='none';return}
   const col=n===1?'var(--gt)':'var(--rt)'
-  dd.innerHTML=filtered.map(p=>`<div class="dd-item" onmousedown="pickP(${n},${players.indexOf(p)})"><span>${p.name}</span><span style="color:${col};font-size:.75rem;font-weight:600;">${p.elo}</span></div>`).join('')
+  dd.innerHTML=filtered.map(p=>
+    `<div class="dd-item" onmousedown="pickP(${n},${players.indexOf(p)})">
+       <span>${p.name}</span>
+       <span style="color:${col};font-size:.75rem;font-weight:600;">${p.elo}</span>
+     </div>`
+  ).join('')
   dd.style.display='block'
 }
 
 function pickP(n,idx){
   clearTimeout(ddTimer[n]);const p=players[idx];if(!p)return
-  const col=n===1?'var(--gb)':'var(--rb)',info=`#${p.rank} · ${p.elo} ELO · WR ${p.winrate.toFixed(0)}%`
+  const col=n===1?'var(--gb)':'var(--rb)'
+  const info=`#${p.rank} · ${p.elo} ELO · WR ${p.winrate.toFixed(0)}%`
   if(n===1){S.p1=p;el('q1').value=p.name;el('q1').style.borderColor=col;el('p1info').textContent=info;el('p1info').style.display='block'}
   else{S.p2=p;el('q2').value=p.name;el('q2').style.borderColor=col;el('p2info').textContent=info;el('p2info').style.display='block'}
   el(`dd${n}`).style.display='none';chkStart()
@@ -520,7 +724,8 @@ function sNil(n){
 }
 function cNil(n){
   if(n===1)S.p1nil=false;else S.p2nil=false
-  el(`p${n}nb2`).style.display='none';el(`p${n}nb`).style.display='block';el(`q${n}`).style.display='block';chkStart()
+  el(`p${n}nb2`).style.display='none';el(`p${n}nb`).style.display='block'
+  el(`q${n}`).style.display='block';chkStart()
 }
 function rPicker(n){
   S[`p${n}`]=null;S[`p${n}nil`]=false
@@ -532,23 +737,28 @@ function chkStart(){el('start-btn').disabled=!((S.p1||S.p1nil)&&(S.p2||S.p2nil))
 
 function toRP(p,nil,fb){
   if(nil||!p)return{name:fb,inList:false,rank:0,elo:0,games:0,wins:0,losses:0,draws:0,winrate:0,peakElo:0}
-  return{name:p.name,inList:true,rank:p.rank,elo:p.elo,games:p.games,wins:p.wins,losses:p.losses,draws:p.draws,winrate:p.winrate,peakElo:p.peakElo}
+  return{name:p.name,inList:true,rank:p.rank,elo:p.elo,games:p.games,wins:p.wins,
+         losses:p.losses,draws:p.draws,winrate:p.winrate,peakElo:p.peakElo}
 }
 
-// ── MATCH ──────────────────────────────────────────
+// ── MATCH ────────────────────────────────────────────
 async function startMatch(){
   S.p1hp=20;S.p2hp=20;S.p1w=0;S.p2w=0
   const rp1=toRP(S.p1,S.p1nil,'Hráč 1'),rp2=toRP(S.p2,S.p2nil,'Hráč 2')
   await dbPatch(`rooms/${S.code}`,{p1:rp1,p2:rp2,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'playing'})
-  el('m-n1').textContent=rp1.name;el('m-n2').textContent=rp2.name
-  el('wb1').textContent=rp1.name;el('wb2').textContent=rp2.name
+  el('m-n1').textContent=rp1.name
+  el('m-n2').textContent=rp2.name
+  el('wb1').textContent=rp1.name
+  el('wb2').textContent=rp2.name
   mRHP(1);mRHP(2);mRDots(1);mRDots(2)
   showScr('mob-match')
 }
 
 function mRHP(n){
   const hp=n===1?S.p1hp:S.p2hp,lo=hp<=5
-  const e=el(`m-hp${n}`);e.textContent=hp;e.style.color=lo?'var(--danger)':(n===1?'var(--gt)':'var(--rt)')
+  const e=el(`m-hp${n}`)
+  e.textContent=hp
+  e.style.color=lo?'var(--danger)':(n===1?'var(--gt)':'var(--rt)')
 }
 function mRDots(n){
   const w=n===1?S.p1w:S.p2w,col=n===1?'var(--g)':'var(--r)'
@@ -561,28 +771,84 @@ async function chHP(n,d){
   mRHP(n)
 }
 
+// ── WIN FLOW ─────────────────────────────────────────
 async function declWin(w){
   if(w===1)S.p1w++;else S.p2w++;
   S.p1hp=20;S.p2hp=20
-  hideOv('ov-win');mRHP(1);mRHP(2);mRDots(1);mRDots(2)
+  hideOv('ov-win')
   await dbPatch(`rooms/${S.code}`,{p1hp:20,p2hp:20,p1w:S.p1w,p2w:S.p2w})
+
+  // Determine game winner player data
+  const winIdx=w===1?1:2
+  const winP=w===1?(S.p1||S.room?.p1):( S.p2||S.room?.p2)
+  const winName=winP?.name||(w===1?'Hráč 1':'Hráč 2')
+  const winCol=w===1?'var(--gt)':'var(--rt)'
+  const winBorder=w===1?'var(--gb)':'var(--rb)'
+  const winBg=w===1?'var(--gl)':'var(--rl)'
+
+  // Store pending winner for continueAfterGame
+  S.pendingWinner=w
+
+  // Populate game winner overlay
+  const card=el('gwin-card')
+  card.style.borderColor=winBorder
+  card.style.background=winBg
+
+  const lbl=el('gwin-lbl')
   if(S.p1w>=2||S.p2w>=2){
-    const wName=S.p1w>=2?(S.p1?.name||S.room?.p1?.name||'Hráč 1'):(S.p2?.name||S.room?.p2?.name||'Hráč 2')
+    lbl.textContent='VÍTĚZ MATCHE BO3'
+    el('gwin-cont-btn').textContent='Výsledky →'
+  }else{
+    lbl.textContent='VÝHRA HRY'
+    el('gwin-cont-btn').textContent='Pokračovat →'
+  }
+
+  el('gwin-name').textContent=winName
+  el('gwin-name').style.color=winCol
+
+  // Stats for winner
+  let statsHTML=''
+  if(winP?.inList){
+    statsHTML=`
+      <div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">#${winP.rank}</div><div class="gwin-stat-lbl">Pořadí</div></div>
+      <div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.elo}</div><div class="gwin-stat-lbl">ELO</div></div>
+      <div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${(winP.winrate||0).toFixed(0)}%</div><div class="gwin-stat-lbl">Winrate</div></div>
+      <div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.wins}W / ${winP.losses}L</div><div class="gwin-stat-lbl">Zápasy</div></div>
+    `
+  }
+  el('gwin-stats').innerHTML=statsHTML
+
+  mRHP(1);mRHP(2);mRDots(1);mRDots(2)
+  showOv('ov-gwin')
+}
+
+async function continueAfterGame(){
+  const w=S.pendingWinner
+  hideOv('ov-gwin')
+
+  // BO3 match over?
+  if(S.p1w>=2||S.p2w>=2){
+    const wName=S.p1w>=2
+      ?(S.p1?.name||S.room?.p1?.name||'Hráč 1')
+      :(S.p2?.name||S.room?.p2?.name||'Hráč 2')
     const wCol=S.p1w>=2?'var(--gt)':'var(--rt)'
-    el('match-win-nm').textContent=wName;el('match-win-nm').style.color=wCol
+    el('match-win-nm').textContent=wName
+    el('match-win-nm').style.color=wCol
     await dbPatch(`rooms/${S.code}`,{status:'match-over'})
     showOv('ov-match')
   }
+  // else continue playing – nothing to do
 }
 
 async function resetToSel(){
-  hideOv('ov-match');S.p1w=0;S.p2w=0;S.p1hp=20;S.p2hp=20;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false
+  hideOv('ov-match');hideOv('ov-gwin')
+  S.p1w=0;S.p2w=0;S.p1hp=20;S.p2hp=20;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false;S.pendingWinner=0
   rPicker(1);rPicker(2);el('start-btn').disabled=true
   await dbPatch(`rooms/${S.code}`,{p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'selecting'})
   showScr('mob-sel')
 }
 
-// ── INIT ───────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────
 loadPlayers()
 </script>
 </body>
