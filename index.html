@@ -165,82 +165,84 @@ input{font-family:inherit;}
 .primary-btn{padding:12px 2.5rem;background:var(--yl);border:1px solid var(--yb);color:var(--y);border-radius:var(--rr);font-size:1rem;font-weight:700;}
 .primary-btn:disabled{background:transparent;border-color:var(--b);color:var(--td);cursor:default;}
 
-/* MOBILE MATCH – LANDSCAPE
-   Screenshot layout:
-   LEFT  (green): [btn-col LEFT] | [HP big] | [name vertical + dots → center]
-   RIGHT (red):   [name vertical + dots ← center] | [HP big] | [btn-col RIGHT]
-   Name on left reads bottom→top. Name on right reads bottom→top too (both face same direction visually).
+/* MOBILE MATCH – LANDSCAPE, TOP/BOTTOM split
+   Phone lies landscape on table.
+   Player B sits at TOP edge  → top half, content rotated 180°
+   Player A sits at BOTTOM edge → bottom half, normal orientation
+   Each half: [btns at outer edge] [HP number] [name+dots toward center]
 */
 #mob-match{
-  position:fixed;inset:0;display:none;flex-direction:row;
+  position:fixed;inset:0;display:none;flex-direction:column;
   background:var(--bg);z-index:1;overflow:hidden;
 }
 #mob-match.on{display:flex;}
 
-/* Each half: ROW */
-.m-half{flex:1;display:flex;flex-direction:row;align-items:center;overflow:hidden;min-width:0;}
+/* Each half fills 50% height, row layout */
+.m-half{flex:1;display:flex;flex-direction:row;align-items:center;overflow:hidden;}
 
-/* Vertical divider */
-.m-mid-row{width:1px;background:var(--bm);flex-shrink:0;}
+/* Player B: top, rotated 180° so they read from the top edge */
+.m-half.pb{transform:rotate(180deg);}
 
-/* Button column */
+/* Horizontal divider with DOHRÁNO button */
+.m-mid-row{
+  height:1px;background:var(--bm);flex-shrink:0;position:relative;
+}
+
+/* Button column – one side */
 .m-btncol{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(5px,1.2vh,11px);
-  padding:clamp(10px,2.5vw,22px);
+  gap:clamp(4px,1.2vw,10px);
+  padding:clamp(8px,1.5vw,18px);
   flex-shrink:0;
 }
 .m-btn{
-  width:clamp(44px,6.5vh,64px);height:clamp(44px,6.5vh,64px);
+  width:clamp(44px,8vw,70px);height:clamp(44px,8vw,70px);
   border-radius:var(--rrs);font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(.85rem,2vh,1.2rem);border-width:1px;border-style:solid;
+  font-size:clamp(.85rem,2.2vw,1.3rem);border-width:1px;border-style:solid;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* HP number */
+/* HP fills the center */
+.m-hp-area{flex:1;display:flex;align-items:center;justify-content:center;}
 .m-hp{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(4.5rem,35vh,11rem);
-  line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;flex-shrink:0;
+  font-size:clamp(5rem,18vw,12rem);
+  line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;
 }
 
-/* Name + dots panel */
+/* Name + dots column, toward divider */
 .m-namerow{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(6px,1.5vh,14px);padding:0 clamp(6px,1.5vw,14px);
+  gap:clamp(6px,1.2vw,14px);padding:0 clamp(6px,1.2vw,14px);flex-shrink:0;
 }
 .m-name{
-  writing-mode:vertical-rl;
-  transform:rotate(180deg);
-  font-size:clamp(.6rem,1.5vh,.9rem);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:clamp(.6rem,1.5vw,.85rem);
   letter-spacing:.2em;text-transform:uppercase;font-weight:700;white-space:nowrap;
 }
 .m-dots{display:flex;flex-direction:column;gap:5px;}
-.m-wdot{width:clamp(9px,1.4vh,13px);height:clamp(9px,1.4vh,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
+.m-wdot{width:clamp(9px,1.5vw,13px);height:clamp(9px,1.5vw,13px);border-radius:50%;border-width:1.5px;border-style:solid;transition:background .25s;}
 
-/* HP flex spacer to push HP toward center */
-.m-hp-area{flex:1;display:flex;align-items:center;justify-content:center;}
-
-/* DOHRÁNO: absolute inside #mob-match so it works in element fullscreen */
+/* DOHRÁNO – absolute center of the divider */
 .mob-done{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
-  padding:9px 24px;
-  font-size:.78rem;font-weight:700;letter-spacing:.16em;
+  padding:8px 22px;font-size:.76rem;font-weight:700;letter-spacing:.16em;
   background:rgba(18,22,31,.96);backdrop-filter:blur(8px);
   border:1.5px solid var(--bh);border-radius:var(--rrl);
   color:var(--tx);white-space:nowrap;pointer-events:auto;
 }
 .mob-fs{
-  position:absolute;bottom:10px;right:10px;z-index:201;
-  width:32px;height:32px;background:rgba(18,22,31,.88);border:1px solid var(--bh);
-  border-radius:var(--rrs);color:var(--tx);font-size:13px;
+  position:absolute;bottom:8px;right:8px;z-index:201;
+  width:30px;height:30px;background:rgba(18,22,31,.88);border:1px solid var(--bh);
+  border-radius:var(--rrs);color:var(--tx);font-size:12px;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* Winner overlay inside mob-match for fullscreen */
+/* All overlays inside mob-match as absolute so they work in element fullscreen */
 .m-overlay{
-  display:none;position:absolute;inset:0;background:rgba(10,13,20,.93);z-index:300;
+  display:none;position:absolute;inset:0;z-index:300;
   flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+  background:rgba(10,13,20,.94);
 }
 .m-overlay.on{display:flex;}
 
@@ -400,8 +402,29 @@ input{font-family:inherit;}
 -->
 <div id="mob-match" class="scr">
 
-  <!-- Player A: GREEN, left half
-       [btncol LEFT] [HP] [name-vertical + dots → toward center] -->
+  <!-- Player B: TOP half (rotated 180° so they read from top edge of landscape phone) -->
+  <div class="m-half pb">
+    <div class="m-btncol">
+      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
+      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
+      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+    </div>
+    <div class="m-namerow">
+      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
+      <div class="m-dots" id="m-d2"></div>
+    </div>
+  </div>
+
+  <!-- Horizontal divider with DOHRÁNO button in center -->
+  <div class="m-mid-row">
+    <button class="mob-done" onclick="mDohrano()">DOHR&Aacute;NO</button>
+  </div>
+
+  <!-- Player A: BOTTOM half, normal orientation -->
   <div class="m-half pa">
     <div class="m-btncol">
       <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
@@ -418,31 +441,11 @@ input{font-family:inherit;}
     </div>
   </div>
 
-  <!-- Vertical divider -->
-  <div class="m-mid-row"></div>
-
-  <!-- Player B: RED, right half
-       [name-vertical + dots ← toward center] [HP] [btncol RIGHT] -->
-  <div class="m-half pb">
-    <div class="m-namerow">
-      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
-      <div class="m-dots" id="m-d2"></div>
-    </div>
-    <div class="m-hp-area">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-    </div>
-    <div class="m-btncol">
-      <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
-      <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
-      <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
-    </div>
-  </div>
-
-  <button class="mob-done" onclick="mDohrano()">DOHR&Aacute;NO</button>
   <button class="mob-fs" onclick="toggleFS()" id="fs-btn">&#x26F6;</button>
 
-  <!-- Winner overlay inside mob-match – works in element fullscreen -->
+  <!-- ALL overlays inside mob-match so they work in element fullscreen -->
+
+  <!-- Kdo vyhral hru -->
   <div id="m-ov-win" class="m-overlay">
     <p style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);">KDO VYHR&Aacute;L HRU?</p>
     <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
@@ -450,6 +453,26 @@ input{font-family:inherit;}
       <button class="ov-btn" id="m-wb2" onclick="declWin(2)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);"></button>
     </div>
     <button style="background:none;border:none;font-size:.8rem;color:var(--tm);cursor:pointer;" onclick="hideMOv()">Zru&#x161;it</button>
+  </div>
+
+  <!-- Vyhra hry + data viteze -->
+  <div id="m-ov-gwin" class="m-overlay">
+    <div class="gwin-card" id="m-gwin-card">
+      <p class="lbl" id="m-gwin-lbl" style="margin-bottom:.375rem;">V&Yacute;HRA HRY</p>
+      <div class="gwin-name" id="m-gwin-name"></div>
+      <div class="gwin-stats" id="m-gwin-stats"></div>
+      <button class="primary-btn" id="m-gwin-cont-btn" onclick="mContinueAfterGame()" style="width:100%;margin-top:.25rem;">Pokra&#x10D;ovat &#x2192;</button>
+    </div>
+  </div>
+
+  <!-- Vitez matche BO3 -->
+  <div id="m-ov-match" class="m-overlay">
+    <div class="mwin-card">
+      <p class="lbl" style="margin-bottom:.5rem;">V&Iacute;T&#x11A;Z MATCHE BO3</p>
+      <div class="mwin-name" id="m-match-win-nm"></div>
+      <p style="font-size:.8rem;color:var(--tm);margin:.375rem 0 1.5rem;">vyhr&aacute;l BO3!</p>
+      <button class="primary-btn" onclick="mResetToSel()" style="width:100%;">Nov&yacute; v&yacute;b&#x11B;r &#x2192;</button>
+    </div>
   </div>
 </div>
 
@@ -619,7 +642,7 @@ function renderPC(){
   // Compare – 7 stats
   const cmp=el('d-cmp')
   if(p1?.inList&&p2?.inList){
-    cmp.style.display='flex'
+    cmp.style.display='block'
     const bars=[
       {l:'ELO',      v1:p1.elo,      v2:p2.elo,      mx:maxS.elo},
       {l:'HRY',      v1:p1.games,    v2:p2.games,    mx:maxS.games},
@@ -647,7 +670,7 @@ function renderPC(){
         <span style="color:var(--tm);font-size:.75rem;">POŘADÍ</span>
         <span style="color:${wCol};font-size:1.25rem;font-weight:800;">${winP.elo}</span>
         <span style="color:var(--tm);font-size:.75rem;">ELO</span>
-        <span style="color:${wCol};font-size:1rem;">${(winP.winrate||0).toFixed(0)}%</span>
+        <span style="color:${wCol};font-size:1rem;">${(winP.winrate||0).toFixed(1)}%</span>
         <span style="color:var(--tm);font-size:.75rem;">WINRATE</span>
       `
     }else{el('pc-win-stats').innerHTML=''}
@@ -757,31 +780,37 @@ async function chHP(n,d){
 
 async function declWin(w){
   if(w===1)S.p1w++;else S.p2w++;
-  S.p1hp=20;S.p2hp=20;hideOv('ov-win');hideMOv()
+  S.p1hp=20;S.p2hp=20
+  hideMOv('m-ov-win')
   await dbPatch(`rooms/${S.code}`,{p1hp:20,p2hp:20,p1w:S.p1w,p2w:S.p2w})
   S.pw=w
   const winP=w===1?(S.p1||S.room?.p1):(S.p2||S.room?.p2)
   const winName=winP?.name||(w===1?'Hráč 1':'Hráč 2')
   const winCol=w===1?'var(--gt)':'var(--rt)',winB=w===1?'var(--gb)':'var(--rb)',winBg=w===1?'var(--gl)':'var(--rl)'
   const isOver=S.p1w>=2||S.p2w>=2
-  const card=el('gwin-card');card.style.borderColor=winB;card.style.background=winBg
-  el('gwin-lbl').textContent=isOver?'VÍTĚZ MATCHE BO3':'VÝHRA HRY'
-  el('gwin-cont-btn').textContent=isOver?'Výsledky →':'Pokračovat →'
-  el('gwin-name').textContent=winName;el('gwin-name').style.color=winCol
+  // Populate mobile gwin overlay
+  const card=el('m-gwin-card');card.style.borderColor=winB;card.style.background=winBg
+  el('m-gwin-lbl').textContent=isOver?'VÍTĚZ MATCHE BO3':'VÝHRA HRY'
+  el('m-gwin-cont-btn').textContent=isOver?'Výsledky →':'Pokračovat →'
+  el('m-gwin-name').textContent=winName;el('m-gwin-name').style.color=winCol
   let st=''
   if(winP?.inList)st=`<div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">#${winP.rank}</div><div class="gwin-stat-lbl">Pořadí</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.elo}</div><div class="gwin-stat-lbl">ELO</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${(winP.winrate||0).toFixed(1)}%</div><div class="gwin-stat-lbl">Winrate</div></div><div class="gwin-stat"><div class="gwin-stat-val" style="color:${winCol};">${winP.wins}W/${winP.losses}L</div><div class="gwin-stat-lbl">Bilance</div></div>`
-  el('gwin-stats').innerHTML=st;mRHP(1);mRHP(2);mRDots(1);mRDots(2);showOv('ov-gwin')
+  el('m-gwin-stats').innerHTML=st
+  mRHP(1);mRHP(2);mRDots(1);mRDots(2)
+  showMOv('m-ov-gwin')
 }
-async function continueAfterGame(){
-  hideOv('ov-gwin')
+async function mContinueAfterGame(){
+  hideMOv('m-ov-gwin')
   if(S.p1w>=2||S.p2w>=2){
     const wName=S.p1w>=2?(S.p1?.name||S.room?.p1?.name||'Hráč 1'):(S.p2?.name||S.room?.p2?.name||'Hráč 2')
-    el('match-win-nm').textContent=wName;el('match-win-nm').style.color=S.p1w>=2?'var(--gt)':'var(--rt)'
-    await dbPatch(`rooms/${S.code}`,{status:'match-over'});showOv('ov-match')
+    el('m-match-win-nm').textContent=wName
+    el('m-match-win-nm').style.color=S.p1w>=2?'var(--gt)':'var(--rt)'
+    await dbPatch(`rooms/${S.code}`,{status:'match-over'})
+    showMOv('m-ov-match')
   }
 }
-async function resetToSel(){
-  hideOv('ov-match');hideOv('ov-gwin')
+async function mResetToSel(){
+  hideMOv('m-ov-match');hideMOv('m-ov-gwin')
   S.p1w=0;S.p2w=0;S.p1hp=20;S.p2hp=20;S.p1=null;S.p2=null;S.p1nil=false;S.p2nil=false;S.pw=0
   rPicker(1);rPicker(2);el('start-btn').disabled=true
   await dbPatch(`rooms/${S.code}`,{p1:null,p2:null,p1hp:20,p2hp:20,p1w:0,p2w:0,status:'selecting'})
@@ -791,9 +820,10 @@ async function resetToSel(){
 function mDohrano(){
   el('m-wb1').textContent=el('m-na').textContent||'Hráč 1'
   el('m-wb2').textContent=el('m-nb').textContent||'Hráč 2'
-  el('m-ov-win').classList.add('on')
+  showMOv('m-ov-win')
 }
-function hideMOv(){el('m-ov-win').classList.remove('on')}
+function showMOv(id){el(id).classList.add('on')}
+function hideMOv(id){if(id)el(id).classList.remove('on');else el('m-ov-win').classList.remove('on')}
 
 loadPlayers()
 
