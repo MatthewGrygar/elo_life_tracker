@@ -139,14 +139,7 @@ input{font-family:inherit;}
 .cbar-v2{font-size:.82rem;font-weight:800;color:var(--rt);text-align:left;line-height:1;font-variant-numeric:tabular-nums;}
 .cbar-mid{display:none;}
 
-/* Win overlay on PC dashboard */
-.pc-win-overlay{
-  position:absolute;inset:0;z-index:20;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
-  background:rgba(10,13,20,.88);backdrop-filter:blur(16px);
-  border-radius:var(--rrl);
-}
-.pc-win-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,7vw,6rem);letter-spacing:.06em;line-height:1;}
+/* pc-win-overlay removed – winner shown in banner */
 
 /* MOBILE CODE */
 #mob-code{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding:2rem;text-align:center;z-index:1;background:var(--bg);}
@@ -231,7 +224,7 @@ input{font-family:inherit;}
 .m-hp-area{flex:1;display:flex;align-items:center;justify-content:center;}
 .m-hp{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(4rem,16vh,9rem);
+  font-size:clamp(5rem,20vh,11rem);
   line-height:1;font-variant-numeric:tabular-nums;transition:color .25s;
 }
 
@@ -295,7 +288,7 @@ input{font-family:inherit;}
       <div style="width:40px;height:1px;background:var(--bm);margin:1rem auto .875rem;"></div>
       <p style="font-size:.875rem;color:var(--tm);">TCG &middot; Realtime &middot; Google Sheets</p>
     </div>
-    <div class="mode-row">
+    <div class="mode-row" style="justify-content:center;">
       <button class="mode-btn" onclick="goPC()">
         <span class="ico">&#x1F5A5;&#xFE0F;</span>
         <div class="ttl">Po&#x10D;&#xED;ta&#x10D;</div>
@@ -352,14 +345,17 @@ input{font-family:inherit;}
     <p class="cmp-title">POROVN&Aacute;N&Iacute;</p>
     <div class="cmp-bars" id="d-bars"></div>
   </div>
-  <div style="margin-top:auto;padding-top:.2rem;">
+  <div style="margin-top:auto;padding-top:.2rem;" id="pc-back-btn">
     <button class="back" onclick="cleanupHome()">&#x2190; Nov&yacute; z&aacute;pas</button>
   </div>
-  <!-- PC winner overlay (shows after match-over until new selection) -->
-  <div id="pc-win-ov" class="pc-win-overlay" style="display:none;">
-    <p class="lbl" style="letter-spacing:.25em;">V&Iacute;T&#x11A;Z MATCHE</p>
-    <div class="pc-win-name" id="pc-win-nm"></div>
-    <div id="pc-win-stats" style="display:flex;gap:1.5rem;align-items:baseline;justify-content:center;margin-top:.5rem;flex-wrap:wrap;"></div>
+  <!-- PC winner banner – replaces HUD content when match is over -->
+  <div id="pc-win-banner" style="display:none;position:absolute;top:0;left:0;right:0;z-index:10;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:1.25rem;background:rgba(24,29,42,.92);backdrop-filter:blur(12px);border:1px solid var(--bm);border-radius:var(--rrl);padding:.6rem 1.5rem;margin:.7rem 1.1rem 0;flex-wrap:wrap;">
+      <span class="lbl" style="letter-spacing:.2em;flex-shrink:0;">V&Iacute;T&#x11A;Z MATCHE</span>
+      <span id="pc-win-nm" style="font-family:'Bebas Neue',sans-serif;font-size:2.25rem;line-height:1;letter-spacing:.05em;"></span>
+      <div id="pc-win-stats" style="display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;"></div>
+      <button class="back" onclick="cleanupHome()" style="margin-left:.5rem;">&#x2190; Nov&yacute; z&aacute;pas</button>
+    </div>
   </div>
 </div>
 
@@ -425,18 +421,18 @@ input{font-family:inherit;}
 <div id="mob-match" class="scr">
 
   <div class="m-half pb">
-    <div class="m-namerow">
-      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
-      <div class="m-dots" id="m-d2"></div>
-    </div>
-    <div class="m-hp-area">
-      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
-    </div>
     <div class="m-btnrow">
       <button class="m-btn" onpointerdown="chHP(2,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
       <button class="m-btn" onpointerdown="chHP(2,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
       <button class="m-btn" onpointerdown="chHP(2,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
       <button class="m-btn" onpointerdown="chHP(2,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp2" style="color:var(--rt);">20</div>
+    </div>
+    <div class="m-namerow">
+      <p class="m-name" id="m-nb" style="color:var(--rt);"></p>
+      <div class="m-dots" id="m-d2"></div>
     </div>
   </div>
 
@@ -446,18 +442,18 @@ input{font-family:inherit;}
   </div>
 
   <div class="m-half pa">
-    <div class="m-namerow">
-      <p class="m-name" id="m-na" style="color:var(--gt);"></p>
-      <div class="m-dots" id="m-d1"></div>
-    </div>
-    <div class="m-hp-area">
-      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
-    </div>
     <div class="m-btnrow">
       <button class="m-btn" onpointerdown="chHP(1,5)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+5</button>
       <button class="m-btn" onpointerdown="chHP(1,1)"  style="background:var(--gl);border-color:var(--gb);color:var(--gt);">+1</button>
       <button class="m-btn" onpointerdown="chHP(1,-1)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;1</button>
       <button class="m-btn" onpointerdown="chHP(1,-5)" style="background:var(--rl);border-color:var(--rb);color:var(--rt);">&#x2212;5</button>
+    </div>
+    <div class="m-hp-area">
+      <div class="m-hp" id="m-hp1" style="color:var(--gt);">20</div>
+    </div>
+    <div class="m-namerow">
+      <p class="m-name" id="m-na" style="color:var(--gt);"></p>
+      <div class="m-dots" id="m-d1"></div>
     </div>
   </div>
 
@@ -676,7 +672,7 @@ function renderPC(){
   }else cmp.style.display='none'
 
   // PC match-over winner display
-  const ov=el('pc-win-ov')
+  const ov=el('pc-win-banner')
   if(r.status==='match-over'&&(p1||p2)){
     const w1g=r.p1w??0,w2g=r.p2w??0
     const winP=w1g>=2?p1:p2
