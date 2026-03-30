@@ -94,8 +94,10 @@ input{font-family:inherit;}
 .hud::before{left:0;background:linear-gradient(to right,rgba(23,168,112,.07),transparent);}
 .hud::after{right:0;background:linear-gradient(to left,rgba(217,82,40,.07),transparent);}
 
-.hud-left{display:flex;align-items:center;gap:.7rem;min-width:0;justify-content:center;}
-.hud-right{display:flex;align-items:center;gap:.7rem;min-width:0;justify-content:center;}
+.hud-left{display:flex;align-items:center;gap:.7rem;min-width:0;justify-content:flex-start;}
+.hud-left .hud-dots{margin-left:auto;}
+.hud-right{display:flex;align-items:center;gap:.7rem;min-width:0;justify-content:flex-start;}
+.hud-right .hud-name{margin-left:auto;}
 .hud-center{display:flex;align-items:center;justify-content:center;padding:0 1.2rem;flex-shrink:0;}
 
 /* name - dots - HP on left; HP - dots - name on right */
